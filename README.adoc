@@ -1,0 +1,5 @@
+= DrillGen
+
+DrillGen is designed to generate marching band drills at varying levels of difficulty. Its results are seen in the book _Haslett Viking Marching Band Master Handbook_.
+
+DrillGen is licensed under the MIT License.

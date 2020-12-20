@@ -1,11 +1,39 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2020 Jacob Wysko
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
 package org.wysko.drillgen;
 
 import org.wysko.drillgen.MarchingParameters.Direction;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Fundamental;
+import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.Box;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.March;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Transition.Flank;
 import org.wysko.drillgen.MarchingParameters.StepSize;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.*;
 
 public class Generator {
@@ -16,50 +44,19 @@ public class Generator {
 		rand.setSeed(System.currentTimeMillis());
 	}
 	
-	public static void main(String[] args) throws InvalidDifficultyStepSizeCombo {
+	public static void main(String[] args) throws InvalidDifficultyStepSizeCombo, FileNotFoundException {
 		
 		
-		// EASY (2-3)
-		// Forwards march
-		// Backwards march
-		// Left/Right flank
-		// 8:5
-		
-		// MEDIUM (2-4)
-		// Forwards march
-		// Backwards march
-		// Left/Right flank
-		// Boxes
-		// 8:5
-		// 16:5
-		
-		// HARD (3-4)
-		// Forwards march
-		// Backwards march
-		// Left/Right flank
-		// Boxes
-		// 8:5
-		// 16:5
-		// 6:5
-		
-		// EXPERT (4-5)
-		// Forwards march
-		// Backwards march
-		// Left/Right flank
-		// Boxes
-		// 8:5
-		// 16:5
-		// 6:5
-		// 12:5
-		
-		final Difficulty difficulty = Difficulty.BEGINNER;
+		final Difficulty difficulty = Difficulty.EXPERT;
 		List<Stack<Fundamental>> drills = new ArrayList<>();
-		for (int i = 0; i < 1E6; i++) {
+		for (int i = 0; i < 100; i++) {
 			Stack<Fundamental> e = makeADrill(difficulty);
 			if (!drills.contains(e))
 				drills.add(e);
 		}
-		drills.forEach(System.out::println);
+		PrintStream stream = new PrintStream("drills.txt");
+		drills.forEach(drill -> stream.println(drill.toString()));
+		stream.close();
 	}
 	
 	
@@ -82,6 +79,11 @@ public class Generator {
 				}
 				break;
 			case EASY:
+				// EASY (2-3)
+				// Forwards march
+				// Backwards march
+				// Left/Right flank
+				// 8:5
 				int var = rand.nextInt(3);
 				switch (var) {
 					case 0:
@@ -122,6 +124,132 @@ public class Generator {
 							)); // nested ternary just flips direction on every other
 						}
 						break;
+				}
+				break;
+			case MEDIUM:
+				// MEDIUM (2-4)
+				// Forwards march
+				// Backwards march
+				// Left/Right flank
+				// Boxes
+				// 8:5
+				// 16:5
+				int n = rand.nextInt(3) + 2;
+				for (int i = 0; i < n; i++) {
+					Class<? extends Fundamental> thisFundamental;
+					do {
+						thisFundamental = listRand(Arrays.asList(March.class, Box.class, Flank.class));
+					}
+					while (
+							((i == 0 || i == n - 1) && thisFundamental == Flank.class) ||
+									(i > 0 && drill.get(i - 1) instanceof Box && thisFundamental == Flank.class) ||
+									(i > 0 && drill.get(i - 1) instanceof March &&
+											((March) drill.get(i - 1)).direction == Direction.YDirection.BACKWARDS &&
+											thisFundamental == Flank.class) ||
+									(i > 0 && drill.get(i - 1) instanceof Flank && thisFundamental == Flank.class)
+					);
+					if (thisFundamental == Box.class) {
+						Direction.XDirection xDirection = Direction.randomXDirection();
+						StepSize stepSize = rand.nextBoolean() ? StepSize.EIGHT_TO_FIVE : StepSize.SIXTEEN_TO_FIVE;
+						int length = randLength(Difficulty.MEDIUM, stepSize);
+						drill.add(new Box(length, stepSize, xDirection));
+					} else if (thisFundamental == Flank.class) {
+						drill.add(new Flank(Direction.randomXDirection()));
+					} else if (thisFundamental == March.class) {
+						Direction.YDirection yDirection = Direction.randomYDirection();
+						if (i > 0 && drill.get(i - 1) instanceof March) {
+							if (((March) drill.get(i - 1)).direction == yDirection) {
+								yDirection = yDirection == Direction.YDirection.FORWARDS ?
+										Direction.YDirection.BACKWARDS : Direction.YDirection.FORWARDS;
+							}
+						}
+						StepSize stepSize = rand.nextBoolean() ? StepSize.EIGHT_TO_FIVE : StepSize.SIXTEEN_TO_FIVE;
+						int length = randLength(Difficulty.MEDIUM, stepSize);
+						drill.add(new March(length, stepSize, yDirection));
+					}
+				}
+				break;
+			case HARD:
+				// HARD (3-4)
+				// Forwards march
+				// Backwards march
+				// Left/Right flank
+				// Boxes
+				// 8:5
+				// 16:5
+				// 6:5
+				int n1 = rand.nextInt(2) + 3;
+				for (int i = 0; i < n1; i++) {
+					Class<? extends Fundamental> thisFundamental;
+					do {
+						thisFundamental = listRand(Arrays.asList(March.class, Box.class, Flank.class));
+					}
+					while (
+							((i == 0 || i == n1 - 1) && thisFundamental == Flank.class) ||
+									(i > 0 && drill.get(i - 1) instanceof Box && thisFundamental == Flank.class) ||
+									(i > 0 && drill.get(i - 1) instanceof Flank && thisFundamental == Flank.class)
+					);
+					StepSize stepSize = listRand(Arrays.asList(StepSize.EIGHT_TO_FIVE, StepSize.SIXTEEN_TO_FIVE,
+							StepSize.SIX_TO_FIVE));
+					if (thisFundamental == Box.class) {
+						Direction.XDirection xDirection = Direction.randomXDirection();
+						int length = randLength(Difficulty.HARD, stepSize);
+						drill.add(new Box(length, stepSize, xDirection));
+					} else if (thisFundamental == Flank.class) {
+						drill.add(new Flank(Direction.randomXDirection()));
+					} else if (thisFundamental == March.class) {
+						Direction.YDirection yDirection = Direction.randomYDirection();
+						if (i > 0 && drill.get(i - 1) instanceof March) {
+							if (((March) drill.get(i - 1)).direction == yDirection) {
+								yDirection = yDirection == Direction.YDirection.FORWARDS ?
+										Direction.YDirection.BACKWARDS : Direction.YDirection.FORWARDS;
+							}
+						}
+						int length = randLength(Difficulty.HARD, stepSize);
+						drill.add(new March(length, stepSize, yDirection));
+					}
+				}
+				break;
+			case EXPERT:
+				// EXPERT (4-5)
+				// Forwards march
+				// Backwards march
+				// Left/Right flank
+				// Boxes
+				// 8:5
+				// 16:5
+				// 6:5
+				// 12:5
+				int n2 = rand.nextInt(2) + 4;
+				for (int i = 0; i < n2; i++) {
+					Class<? extends Fundamental> thisFundamental;
+					do {
+						thisFundamental = listRand(Arrays.asList(March.class, Box.class, Flank.class));
+					}
+					while (
+							((i == 0 || i == n2 - 1) && thisFundamental == Flank.class) ||
+									(i > 0 && drill.get(i - 1) instanceof Box && thisFundamental == Flank.class) ||
+									(i > 0 && drill.get(i - 1) instanceof Flank && thisFundamental == Flank.class)
+					);
+					StepSize stepSize = listRand(Arrays.asList(StepSize.EIGHT_TO_FIVE, StepSize.SIXTEEN_TO_FIVE,
+							StepSize.SIX_TO_FIVE, StepSize.TWELVE_TO_FIVE));
+					if (thisFundamental == Box.class) {
+						Direction.XDirection xDirection = Direction.randomXDirection();
+						int length = randLength(Difficulty.EXPERT, stepSize);
+						drill.add(new Box(length, stepSize, xDirection));
+					} else if (thisFundamental == Flank.class) {
+						drill.add(new Flank(Direction.randomXDirection()));
+					} else if (thisFundamental == March.class) {
+						Direction.YDirection yDirection = Direction.randomYDirection();
+						if (i > 0 && drill.get(i - 1) instanceof March) {
+							if (((March) drill.get(i - 1)).direction == yDirection) {
+								yDirection = yDirection == Direction.YDirection.FORWARDS ?
+										Direction.YDirection.BACKWARDS : Direction.YDirection.FORWARDS;
+							}
+						}
+						int length = randLength(Difficulty.EXPERT, stepSize);
+						drill.add(new March(length, stepSize, yDirection));
+					}
 				}
 				break;
 		}
