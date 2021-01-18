@@ -30,7 +30,7 @@ import java.util.Random;
 /**
  * An orthogonal, relative, theoretical line relative to the marcher's body.
  */
-public abstract class Direction {
+public class RelativeDirection {
 	
 	/**
 	 * Given an {@link Enum}, returns a random value from the Enum.

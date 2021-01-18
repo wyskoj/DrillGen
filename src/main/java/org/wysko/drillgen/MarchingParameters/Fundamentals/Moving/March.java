@@ -25,7 +25,7 @@
 
 package org.wysko.drillgen.MarchingParameters.Fundamentals.Moving;
 
-import org.wysko.drillgen.MarchingParameters.Direction;
+import org.wysko.drillgen.MarchingParameters.RelativeDirection;
 import org.wysko.drillgen.MarchingParameters.StepSize;
 
 /**
@@ -34,16 +34,16 @@ import org.wysko.drillgen.MarchingParameters.StepSize;
 public class March extends MovingFundamental {
 	
 	/**
-	 * The {@link Direction.YDirection} of the march.
+	 * The {@link RelativeDirection.YDirection} of the march.
 	 */
-	public final Direction.YDirection direction;
+	public final RelativeDirection.YDirection direction;
 	
 	/**
 	 * @param length    the length of the march
 	 * @param stepSize  the {@link StepSize} of the march
-	 * @param direction the {@link Direction.YDirection} of the march
+	 * @param direction the {@link RelativeDirection.YDirection} of the march
 	 */
-	public March(int length, StepSize stepSize, Direction.YDirection direction) {
+	public March(int length, StepSize stepSize, RelativeDirection.YDirection direction) {
 		super(length, stepSize);
 		this.direction = direction;
 	}

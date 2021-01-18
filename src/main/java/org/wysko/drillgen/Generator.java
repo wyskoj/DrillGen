@@ -25,7 +25,7 @@
 
 package org.wysko.drillgen;
 
-import org.wysko.drillgen.MarchingParameters.Direction;
+import org.wysko.drillgen.MarchingParameters.RelativeDirection;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Fundamental;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.Box;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.March;
@@ -36,6 +36,10 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.*;
 
+/**
+ * @deprecated Use {@link Generator2} instead.
+ */
+@Deprecated
 public class Generator {
 	static Random rand;
 	
@@ -45,9 +49,7 @@ public class Generator {
 	}
 	
 	public static void main(String[] args) throws InvalidDifficultyStepSizeCombo, FileNotFoundException {
-		
-		
-		final Difficulty difficulty = Difficulty.EXPERT;
+		final Difficulty difficulty = Difficulty.EASY;
 		List<Stack<Fundamental>> drills = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
 			Stack<Fundamental> e = makeADrill(difficulty);
@@ -63,31 +65,21 @@ public class Generator {
 	private static Stack<Fundamental> makeADrill(Difficulty difficulty) throws InvalidDifficultyStepSizeCombo {
 		Stack<Fundamental> drill = new Stack<>();
 		switch (difficulty) {
-			case BEGINNER:
-				// BEGINNER (1)
-				// Forwards march
-				// Backwards march
-				// 8:5
-				Direction.YDirection direction1 = Direction.randomYDirection();
-				
+			case BEGINNER -> {
+				RelativeDirection.YDirection direction1 = RelativeDirection.randomYDirection();
 				drill.push(new March(randLength(difficulty, StepSize.EIGHT_TO_FIVE), StepSize.EIGHT_TO_FIVE,
 						direction1));
 				if (rand.nextBoolean()) {
 					
 					drill.push(new March(randLength(difficulty, StepSize.EIGHT_TO_FIVE), StepSize.EIGHT_TO_FIVE,
-							direction1 == Direction.YDirection.FORWARDS ? Direction.YDirection.BACKWARDS : Direction.YDirection.FORWARDS));
+							direction1 == RelativeDirection.YDirection.FORWARDS ? RelativeDirection.YDirection.BACKWARDS : RelativeDirection.YDirection.FORWARDS));
 				}
-				break;
-			case EASY:
-				// EASY (2-3)
-				// Forwards march
-				// Backwards march
-				// Left/Right flank
-				// 8:5
+			}
+			case EASY -> {
 				int var = rand.nextInt(3);
 				switch (var) {
 					case 0:
-						Direction.YDirection direction = Direction.randomYDirection();
+						RelativeDirection.YDirection direction = RelativeDirection.randomYDirection();
 						drill.push(new March(
 								randLength(Difficulty.EASY, StepSize.EIGHT_TO_FIVE),
 								StepSize.EIGHT_TO_FIVE,
@@ -96,44 +88,37 @@ public class Generator {
 						drill.push(new March(
 								randLength(Difficulty.EASY, StepSize.EIGHT_TO_FIVE),
 								StepSize.EIGHT_TO_FIVE,
-								direction == Direction.YDirection.FORWARDS ? Direction.YDirection.BACKWARDS :
-										Direction.YDirection.FORWARDS
+								direction == RelativeDirection.YDirection.FORWARDS ? RelativeDirection.YDirection.BACKWARDS :
+										RelativeDirection.YDirection.FORWARDS
 						));
 						break;
 					case 1:
 						drill.push(new March(
 								randLength(Difficulty.EASY, StepSize.EIGHT_TO_FIVE),
 								StepSize.EIGHT_TO_FIVE,
-								Direction.YDirection.FORWARDS
+								RelativeDirection.YDirection.FORWARDS
 						));
 						drill.push(rand.nextBoolean() ? Flank.RIGHT_FLANK : Flank.LEFT_FLANK);
 						drill.push(new March(
 								randLength(Difficulty.EASY, StepSize.EIGHT_TO_FIVE),
 								StepSize.EIGHT_TO_FIVE,
-								Direction.YDirection.FORWARDS
+								RelativeDirection.YDirection.FORWARDS
 						));
 						break;
 					case 2:
-						direction = Direction.randomYDirection();
+						direction = RelativeDirection.randomYDirection();
 						for (int i = 0; i < 3; i++) {
 							drill.push(new March(
 									randLength(Difficulty.EASY, StepSize.EIGHT_TO_FIVE),
 									StepSize.EIGHT_TO_FIVE,
-									i % 2 == 0 ? (direction) : (direction == Direction.YDirection.FORWARDS ?
-											Direction.YDirection.BACKWARDS : Direction.YDirection.FORWARDS)
+									i % 2 == 0 ? (direction) : (direction == RelativeDirection.YDirection.FORWARDS ?
+											RelativeDirection.YDirection.BACKWARDS : RelativeDirection.YDirection.FORWARDS)
 							)); // nested ternary just flips direction on every other
 						}
 						break;
 				}
-				break;
-			case MEDIUM:
-				// MEDIUM (2-4)
-				// Forwards march
-				// Backwards march
-				// Left/Right flank
-				// Boxes
-				// 8:5
-				// 16:5
+			}
+			case MEDIUM -> {
 				int n = rand.nextInt(3) + 2;
 				for (int i = 0; i < n; i++) {
 					Class<? extends Fundamental> thisFundamental;
@@ -144,23 +129,23 @@ public class Generator {
 							((i == 0 || i == n - 1) && thisFundamental == Flank.class) ||
 									(i > 0 && drill.get(i - 1) instanceof Box && thisFundamental == Flank.class) ||
 									(i > 0 && drill.get(i - 1) instanceof March &&
-											((March) drill.get(i - 1)).direction == Direction.YDirection.BACKWARDS &&
+											((March) drill.get(i - 1)).direction == RelativeDirection.YDirection.BACKWARDS &&
 											thisFundamental == Flank.class) ||
 									(i > 0 && drill.get(i - 1) instanceof Flank && thisFundamental == Flank.class)
 					);
 					if (thisFundamental == Box.class) {
-						Direction.XDirection xDirection = Direction.randomXDirection();
+						RelativeDirection.XDirection xDirection = RelativeDirection.randomXDirection();
 						StepSize stepSize = rand.nextBoolean() ? StepSize.EIGHT_TO_FIVE : StepSize.SIXTEEN_TO_FIVE;
 						int length = randLength(Difficulty.MEDIUM, stepSize);
 						drill.add(new Box(length, stepSize, xDirection));
 					} else if (thisFundamental == Flank.class) {
-						drill.add(new Flank(Direction.randomXDirection()));
+						drill.add(new Flank(RelativeDirection.randomXDirection()));
 					} else if (thisFundamental == March.class) {
-						Direction.YDirection yDirection = Direction.randomYDirection();
+						RelativeDirection.YDirection yDirection = RelativeDirection.randomYDirection();
 						if (i > 0 && drill.get(i - 1) instanceof March) {
 							if (((March) drill.get(i - 1)).direction == yDirection) {
-								yDirection = yDirection == Direction.YDirection.FORWARDS ?
-										Direction.YDirection.BACKWARDS : Direction.YDirection.FORWARDS;
+								yDirection = yDirection == RelativeDirection.YDirection.FORWARDS ?
+										RelativeDirection.YDirection.BACKWARDS : RelativeDirection.YDirection.FORWARDS;
 							}
 						}
 						StepSize stepSize = rand.nextBoolean() ? StepSize.EIGHT_TO_FIVE : StepSize.SIXTEEN_TO_FIVE;
@@ -168,16 +153,8 @@ public class Generator {
 						drill.add(new March(length, stepSize, yDirection));
 					}
 				}
-				break;
-			case HARD:
-				// HARD (3-4)
-				// Forwards march
-				// Backwards march
-				// Left/Right flank
-				// Boxes
-				// 8:5
-				// 16:5
-				// 6:5
+			}
+			case HARD -> {
 				int n1 = rand.nextInt(2) + 3;
 				for (int i = 0; i < n1; i++) {
 					Class<? extends Fundamental> thisFundamental;
@@ -192,34 +169,25 @@ public class Generator {
 					StepSize stepSize = listRand(Arrays.asList(StepSize.EIGHT_TO_FIVE, StepSize.SIXTEEN_TO_FIVE,
 							StepSize.SIX_TO_FIVE));
 					if (thisFundamental == Box.class) {
-						Direction.XDirection xDirection = Direction.randomXDirection();
+						RelativeDirection.XDirection xDirection = RelativeDirection.randomXDirection();
 						int length = randLength(Difficulty.HARD, stepSize);
 						drill.add(new Box(length, stepSize, xDirection));
 					} else if (thisFundamental == Flank.class) {
-						drill.add(new Flank(Direction.randomXDirection()));
+						drill.add(new Flank(RelativeDirection.randomXDirection()));
 					} else if (thisFundamental == March.class) {
-						Direction.YDirection yDirection = Direction.randomYDirection();
+						RelativeDirection.YDirection yDirection = RelativeDirection.randomYDirection();
 						if (i > 0 && drill.get(i - 1) instanceof March) {
 							if (((March) drill.get(i - 1)).direction == yDirection) {
-								yDirection = yDirection == Direction.YDirection.FORWARDS ?
-										Direction.YDirection.BACKWARDS : Direction.YDirection.FORWARDS;
+								yDirection = yDirection == RelativeDirection.YDirection.FORWARDS ?
+										RelativeDirection.YDirection.BACKWARDS : RelativeDirection.YDirection.FORWARDS;
 							}
 						}
 						int length = randLength(Difficulty.HARD, stepSize);
 						drill.add(new March(length, stepSize, yDirection));
 					}
 				}
-				break;
-			case EXPERT:
-				// EXPERT (4-5)
-				// Forwards march
-				// Backwards march
-				// Left/Right flank
-				// Boxes
-				// 8:5
-				// 16:5
-				// 6:5
-				// 12:5
+			}
+			case EXPERT -> {
 				int n2 = rand.nextInt(2) + 4;
 				for (int i = 0; i < n2; i++) {
 					Class<? extends Fundamental> thisFundamental;
@@ -234,24 +202,24 @@ public class Generator {
 					StepSize stepSize = listRand(Arrays.asList(StepSize.EIGHT_TO_FIVE, StepSize.SIXTEEN_TO_FIVE,
 							StepSize.SIX_TO_FIVE, StepSize.TWELVE_TO_FIVE));
 					if (thisFundamental == Box.class) {
-						Direction.XDirection xDirection = Direction.randomXDirection();
+						RelativeDirection.XDirection xDirection = RelativeDirection.randomXDirection();
 						int length = randLength(Difficulty.EXPERT, stepSize);
 						drill.add(new Box(length, stepSize, xDirection));
 					} else if (thisFundamental == Flank.class) {
-						drill.add(new Flank(Direction.randomXDirection()));
+						drill.add(new Flank(RelativeDirection.randomXDirection()));
 					} else if (thisFundamental == March.class) {
-						Direction.YDirection yDirection = Direction.randomYDirection();
+						RelativeDirection.YDirection yDirection = RelativeDirection.randomYDirection();
 						if (i > 0 && drill.get(i - 1) instanceof March) {
 							if (((March) drill.get(i - 1)).direction == yDirection) {
-								yDirection = yDirection == Direction.YDirection.FORWARDS ?
-										Direction.YDirection.BACKWARDS : Direction.YDirection.FORWARDS;
+								yDirection = yDirection == RelativeDirection.YDirection.FORWARDS ?
+										RelativeDirection.YDirection.BACKWARDS : RelativeDirection.YDirection.FORWARDS;
 							}
 						}
 						int length = randLength(Difficulty.EXPERT, stepSize);
 						drill.add(new March(length, stepSize, yDirection));
 					}
 				}
-				break;
+			}
 		}
 		return drill;
 	}
