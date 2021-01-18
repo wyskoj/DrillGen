@@ -16,142 +16,6 @@ new FormModel {
 			} ) {
 				name: "panel2"
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$rowSpecs": "0, 0, 0"
-					"$hGap": 5
-					"$vGap": 5
-					"$alignLeft": true
-					"$alignTop": true
-					"$columnSpecs": "0"
-				} ) {
-					name: "panel7"
-					"border": new javax.swing.border.TitledBorder( "Settings" )
-					add( new FormComponent( "javax.swing.JCheckBox" ) {
-						name: "assumeInfiniteFieldCheckBox"
-						"text": "Assume infinite field"
-						"selected": true
-						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "assumeInfiniteFieldCheckBoxActionPerformed", true ) )
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-						"$columnSpecs": "0, 0, 0"
-						"$rowSpecs": "0, 0"
-						"$hGap": 5
-						"$vGap": 5
-						"$alignLeft": true
-						"$alignTop": true
-					} ) {
-						name: "startingPositionPanel"
-						"border": new javax.swing.border.TitledBorder( "Starting position" )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label3"
-							"text": "Distance from sideline:"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
-						add( new FormComponent( "javax.swing.JSpinner" ) {
-							name: "stepsFromSidelineSpinner"
-							"model": new javax.swing.SpinnerNumberModel( 0, 0, 84, 2 )
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 1
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label5"
-							"text": "steps"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 2
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label4"
-							"text": "Direction:"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 1
-						} )
-						add( new FormComponent( "javax.swing.JComboBox" ) {
-							name: "directionComboBox"
-							"model": new javax.swing.DefaultComboBoxModel {
-								selectedItem: "North (home sideline)"
-								addElement( "North (home sideline)" )
-								addElement( "East" )
-								addElement( "South" )
-								addElement( "West (away sideline)" )
-							}
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 1
-							"gridy": 1
-						} )
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridy": 1
-					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-						"$columnSpecs": "0"
-						"$rowSpecs": "0"
-						"$hGap": 5
-						"$vGap": 5
-						"$alignLeft": true
-						"$alignTop": true
-					} ) {
-						name: "panel10"
-						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "flankToOriginalDirectionAfterBoxCheckBox"
-							"text": "Flank to original direction after box"
-							"toolTipText": "<html>Sometimes, the ending of a box is a cheat step to return to the original direction. When enabled, this maneuver is done.<br>When disabled, the direction of the last edge of the box is retained when the box is done.</html>"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridy": 2
-					} )
-				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "95"
-					"$rowSpecs": "0, 0, 0, 0, 0, 0"
-					"$hGap": 5
-					"$vGap": 5
-					"$alignLeft": true
-					"$alignTop": true
-				} ) {
-					name: "panel3"
-					"border": new javax.swing.border.TitledBorder( "Presets" )
-					add( new FormComponent( "javax.swing.JRadioButton" ) {
-						name: "beginnerRadioButton"
-						"text": "Beginner"
-						"$buttonGroup": new FormReference( "presetsButtonGroup" )
-						"selected": true
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
-					add( new FormComponent( "javax.swing.JRadioButton" ) {
-						name: "easyRadioButton"
-						"text": "Easy"
-						"$buttonGroup": new FormReference( "presetsButtonGroup" )
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridy": 1
-					} )
-					add( new FormComponent( "javax.swing.JRadioButton" ) {
-						name: "mediumRadioButton"
-						"text": "Medium"
-						"$buttonGroup": new FormReference( "presetsButtonGroup" )
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridy": 2
-					} )
-					add( new FormComponent( "javax.swing.JRadioButton" ) {
-						name: "hardRadioButton"
-						"text": "Hard"
-						"$buttonGroup": new FormReference( "presetsButtonGroup" )
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridy": 3
-					} )
-					add( new FormComponent( "javax.swing.JRadioButton" ) {
-						name: "expertRadioButton"
-						"text": "Expert"
-						"$buttonGroup": new FormReference( "presetsButtonGroup" )
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridy": 4
-					} )
-					add( new FormComponent( "javax.swing.JRadioButton" ) {
-						name: "customRadioButton"
-						"text": "Custom"
-						"$buttonGroup": new FormReference( "presetsButtonGroup" )
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridy": 5
-					} )
-				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-					"gridx": 1
-				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
 					"$columnSpecs": "112, 0"
 					"$rowSpecs": "0, 0, 238"
 					"$hGap": 5
@@ -169,29 +33,37 @@ new FormModel {
 						"$alignLeft": true
 						"$alignTop": true
 					} ) {
-						name: "panel5"
+						name: "fundamentalsPanel"
 						"border": new javax.swing.border.TitledBorder( "Fundamentals" )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "marchCheckBox"
 							"text": "March"
 							"selected": true
+							"name": "March"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "markTimeCheckBox"
 							"text": "Mark time"
 							"selected": true
+							"name": "MarkTime"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridy": 1
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "flankCheckBox"
 							"text": "Flank"
+							"name": "Flank"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridy": 2
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "boxCheckBox"
 							"text": "Box"
+							"name": "Box"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridy": 3
 						} )
@@ -248,11 +120,13 @@ new FormModel {
 							name: "allowBackwardsFlanksCheckBox"
 							"text": "Allow backwards flanks"
 							"toolTipText": "<html>A backwards flank has a backwards march either before or after the flank.<br>Enabling this allows backwards flanks to appear in the drill.</html>"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "allowBackwardsMarchFromBoxCheckBox"
 							"text": "Allow backwards march after box"
 							"toolTipText": "When enabled, allows a backwards march to follow a box."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridy": 1
 						} )
@@ -260,6 +134,7 @@ new FormModel {
 							name: "allowFlanksIntoMarkTimesCheckBox"
 							"text": "Allow flanks into mark times"
 							"toolTipText": "When enabled, allows mark times to follow flanks."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridy": 2
 						} )
@@ -273,17 +148,19 @@ new FormModel {
 						"$alignLeft": true
 						"$rowSpecs": "center:0:1.0, center:0:1.0"
 					} ) {
-						name: "panel1"
+						name: "stepSizesPanel"
 						"border": new javax.swing.border.TitledBorder( "Step sizes" )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "checkBox1"
+							name: "eightToFiveCheckBox"
 							"text": "8:5"
 							"selected": true
+							addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "stepSizeCheckBoxStateChanged", true ) )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "scrollPane1"
 							add( new FormComponent( "javax.swing.JList" ) {
-								name: "list1"
+								name: "eightToFiveList"
 								"model": &DefaultListModel0 new javax.swing.DefaultListModel {
 									addElement( "2" )
 									addElement( "4" )
@@ -302,44 +179,55 @@ new FormModel {
 									addElement( "30" )
 									addElement( "32" )
 								}
+								addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "listChanged", true ) )
 							} )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridx": 1
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "checkBox3"
+							name: "sixteenToFiveCheckBox"
 							"text": "16:5"
+							addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "stepSizeCheckBoxStateChanged", true ) )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridx": 2
 						} )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "scrollPane3"
 							add( new FormComponent( "javax.swing.JList" ) {
-								name: "list3"
+								name: "sixteenToFiveList"
 								"model": #DefaultListModel0
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "listChanged", true ) )
 							} )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridx": 3
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "checkBox2"
+							name: "sixToFiveCheckBox"
 							"text": "6:5"
+							addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "stepSizeCheckBoxStateChanged", true ) )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridy": 1
 						} )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "scrollPane2"
 							add( new FormComponent( "javax.swing.JList" ) {
-								name: "list2"
+								name: "sixToFiveList"
 								"model": #DefaultListModel0
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "listChanged", true ) )
 							} )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridx": 1
 							"gridy": 1
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "checkBox4"
-							"text": "12:"
+							name: "twelveToFiveCheckBox"
+							"text": "12:5"
+							addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "stepSizeCheckBoxStateChanged", true ) )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridy": 1
 							"gridx": 2
@@ -347,8 +235,10 @@ new FormModel {
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "scrollPane4"
 							add( new FormComponent( "javax.swing.JList" ) {
-								name: "list4"
+								name: "twelveToFiveList"
 								"model": #DefaultListModel0
+								"enabled": false
+								addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "listChanged", true ) )
 							} )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridx": 3
@@ -360,14 +250,198 @@ new FormModel {
 					} )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 					"gridheight": 2
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "95"
+					"$rowSpecs": "0, 0, 0, 0, 0, 0"
+					"$hGap": 5
+					"$vGap": 5
+					"$alignLeft": true
+					"$alignTop": true
+				} ) {
+					name: "panel3"
+					"border": new javax.swing.border.TitledBorder( "Presets" )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "beginnerRadioButton"
+						"text": "Beginner"
+						"$buttonGroup": new FormReference( "presetsButtonGroup" )
+						"selected": true
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "presetButtonAction", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "easyRadioButton"
+						"text": "Easy"
+						"$buttonGroup": new FormReference( "presetsButtonGroup" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "presetButtonAction", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 1
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "mediumRadioButton"
+						"text": "Medium"
+						"$buttonGroup": new FormReference( "presetsButtonGroup" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "presetButtonAction", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 2
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "hardRadioButton"
+						"text": "Hard"
+						"$buttonGroup": new FormReference( "presetsButtonGroup" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "presetButtonAction", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 3
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "expertRadioButton"
+						"text": "Expert"
+						"$buttonGroup": new FormReference( "presetsButtonGroup" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "presetButtonAction", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 4
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "customRadioButton"
+						"text": "Custom"
+						"$buttonGroup": new FormReference( "presetsButtonGroup" )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 5
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridx": 1
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$rowSpecs": "0, 0, 0"
+					"$hGap": 5
+					"$vGap": 5
+					"$alignLeft": true
+					"$alignTop": true
+					"$columnSpecs": "0"
+				} ) {
+					name: "panel7"
+					"border": new javax.swing.border.TitledBorder( "Settings" )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "assumeInfiniteFieldCheckBox"
+						"text": "Assume infinite field"
+						"selected": true
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "assumeInfiniteFieldCheckBoxActionPerformed", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+						"$columnSpecs": "0, 0, 0"
+						"$rowSpecs": "0, 0"
+						"$hGap": 5
+						"$vGap": 5
+						"$alignLeft": true
+						"$alignTop": true
+					} ) {
+						name: "startingPositionPanel"
+						"border": new javax.swing.border.TitledBorder( "Starting position" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label3"
+							"text": "Distance from sideline:"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
+						add( new FormComponent( "javax.swing.JSpinner" ) {
+							name: "stepsFromSidelineSpinner"
+							"model": new javax.swing.SpinnerNumberModel( 0, 0, 84, 2 )
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+							"gridx": 1
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label5"
+							"text": "steps"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+							"gridx": 2
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label4"
+							"text": "Direction:"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+							"gridy": 1
+						} )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "directionComboBox"
+							"model": new javax.swing.DefaultComboBoxModel {
+								selectedItem: "North"
+								addElement( "North" )
+								addElement( "East" )
+								addElement( "South" )
+								addElement( "West" )
+							}
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+							"gridx": 1
+							"gridy": 1
+						} )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 1
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+						"$columnSpecs": "0"
+						"$rowSpecs": "0"
+						"$hGap": 5
+						"$vGap": 5
+						"$alignLeft": true
+						"$alignTop": true
+					} ) {
+						name: "panel10"
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "flankToOriginalDirectionAfterBoxCheckBox"
+							"text": "Flank to original direction after box"
+							"toolTipText": "<html>Sometimes, the ending of a box is a cheat step to return to the original direction. When enabled, this maneuver is done.<br>When disabled, the direction of the last edge of the box is retained when the box is done.</html>"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 2
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 					"gridx": 2
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0, 0, 0:1.0"
+					"$rowSpecs": "0, 0, 0:1.0"
+					"$hGap": 5
+					"$vGap": 5
+					"$alignLeft": true
+					"$alignTop": true
+				} ) {
+					name: "panel8"
+					"border": new javax.swing.border.TitledBorder( "Generate" )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label6"
+						"text": "Number of drills:"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
+					add( new FormComponent( "javax.swing.JSpinner" ) {
+						name: "numberOfDrillsSpinner"
+						"model": new javax.swing.SpinnerNumberModel( 1, 1, 100, 1 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+					} )
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane5"
+						add( new FormComponent( "javax.swing.JList" ) {
+							name: "generatedDrillsList"
+						} )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 2
+						"gridheight": 3
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "generateButton"
+						"text": "Generate"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "generateButtonActionPerformed", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 1
+						"gridwidth": 2
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridx": 1
+					"gridy": 1
+					"gridwidth": 2
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "North"
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 5, 0 )
-			"size": new java.awt.Dimension( 780, 785 )
+			"size": new java.awt.Dimension( 780, 595 )
 		} )
 		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
 			name: "presetsButtonGroup"

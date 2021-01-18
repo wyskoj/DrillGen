@@ -94,6 +94,9 @@ public class Generator2 {
 		List<Integer> validMarkTimeLengths;
 		
 		public GeneratorSettings() {
+			validFundamentals = new ArrayList<>();
+			stepSizeLengths = new HashMap<>();
+			validMarkTimeLengths = new ArrayList<>();
 		}
 		
 		public GeneratorSettings setValidFundamentals(List<Class<? extends Fundamental>> validFundamentals) {
