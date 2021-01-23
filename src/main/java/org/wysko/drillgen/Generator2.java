@@ -33,6 +33,7 @@ import org.wysko.drillgen.MarchingParameters.Fundamentals.Transition.Flank;
 import org.wysko.drillgen.MarchingParameters.RelativeDirection;
 import org.wysko.drillgen.MarchingParameters.StepSize;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 @SuppressWarnings("RedundantIfStatement")
@@ -255,8 +256,9 @@ public class Generator2 {
 	 * Generates a {@link Stack<Fundamental>} that represents the drill, based on settings.
 	 *
 	 * @param settings the generator settings
-	 * @return the drill
+	 * @return the drill, null if the generation reaches an unmarchable state
 	 */
+	@Nullable
 	public Stack<Fundamental> generateDrill(GeneratorSettings settings) {
 		Stack<Fundamental> drill = new Stack<>();
 		int numberOfFundamentals =
@@ -311,6 +313,9 @@ public class Generator2 {
 			}
 			
 			/* Pick a random one we just generated */
+			if (possibleFundamentals.isEmpty())
+				return null;
+			
 			Fundamental e = listRand(possibleFundamentals);
 			drill.add(e);
 			
@@ -327,7 +332,7 @@ public class Generator2 {
 				currentDirection = updateDirectionAfterBox(settings, currentDirection, box.direction);
 			}
 			
-			System.out.printf("%s, distance %d, direction %s%n", drill.peek(), sidelineDistance, currentDirection);
+//			System.out.printf("%s, distance %d, direction %s%n", drill.peek(), sidelineDistance, currentDirection);
 		}
 		return drill;
 	}
@@ -519,8 +524,8 @@ public class Generator2 {
 		}
 		
 		/* Don't run off of field */
-		if (currentDirection == CardinalDirection.NORTH
-				&& sidelineDistance - length < 0) {
+		if (!settings.assumeInfiniteField && currentDirection == CardinalDirection.NORTH
+				&& sidelineDistance - length * (yDirection == RelativeDirection.YDirection.BACKWARDS? -1 : 1) < 0) {
 			return false;
 		}
 		

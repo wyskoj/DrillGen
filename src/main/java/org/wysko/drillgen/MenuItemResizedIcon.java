@@ -23,31 +23,21 @@
  *
  */
 
-plugins {
-    id 'java'
-}
+package org.wysko.drillgen;
 
-group 'org.wysko'
-version '1.0-SNAPSHOT'
+import javax.swing.*;
+import java.awt.*;
+import java.io.Serializable;
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    // https://mvnrepository.com/artifact/com.google.guava/guava
-    compile group: 'com.google.guava', name: 'guava', version: '30.1-jre'
-// https://mvnrepository.com/artifact/com.jidesoft/jide-oss
-    compile group: 'com.jidesoft', name: 'jide-oss', version: '3.6.18'
-    implementation 'com.formdev:flatlaf:0.35'
-    compile 'org.japura:japura-gui:7.5.2'
-    // https://mvnrepository.com/artifact/com.itextpdf/itextpdf
-    compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13.2'
-    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-// https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox
-    compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.22'
-// https://mvnrepository.com/artifact/org.ini4j/ini4j
-    compile group: 'org.ini4j', name: 'ini4j', version: '0.5.4'
-    compile 'org.processing:core:3.3.7'
-
+public class MenuItemResizedIcon extends JMenuItem implements Serializable {
+	public MenuItemResizedIcon() {
+	
+	}
+	
+	@Override
+	public void setIcon(Icon defaultIcon) {
+		/* Why isn't this a thing already */
+		final ImageIcon defaultIcon1 = new ImageIcon(((ImageIcon) defaultIcon).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+		super.setIcon(defaultIcon1);
+	}
 }
