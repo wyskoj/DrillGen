@@ -259,8 +259,8 @@ public class Generator2 {
 	 * @return the drill, null if the generation reaches an unmarchable state
 	 */
 	@Nullable
-	public Stack<Fundamental> generateDrill(GeneratorSettings settings) {
-		Stack<Fundamental> drill = new Stack<>();
+	public Drill generateDrill(GeneratorSettings settings) {
+		Drill drill = new Drill();
 		int numberOfFundamentals =
 				new Random().nextInt(settings.maxCountFundamentals - settings.minCountFundamentals + 1)
 						+ settings.minCountFundamentals;
@@ -343,7 +343,7 @@ public class Generator2 {
 	 * @param drill the previously generated drills
 	 * @return true if it is a valid mark time, false otherwise
 	 */
-	private boolean isMarkTimeValid(Stack<Fundamental> drill) {
+	private boolean isMarkTimeValid(Drill drill) {
 		/* Don't mark time after a mark time */
 		return drill.isEmpty() || drill.peek().getClass() != MarkTime.class;
 	}
@@ -465,7 +465,7 @@ public class Generator2 {
 	 * @param i                    the current fundamental
 	 * @return true if it is a valid flank, false otherwise
 	 */
-	private boolean isFlankValid(GeneratorSettings settings, Stack<Fundamental> drill, int numberOfFundamentals,
+	private boolean isFlankValid(GeneratorSettings settings, Drill drill, int numberOfFundamentals,
 	                             int i) {
 		/* Can't flank after mark time */
 		if (!drill.isEmpty() &&
@@ -505,7 +505,7 @@ public class Generator2 {
 	 * @param length           the length of the march
 	 * @return true if it is a valid march, false otherwise
 	 */
-	private boolean isMarchValid(GeneratorSettings settings, Stack<Fundamental> drill, int sidelineDistance,
+	private boolean isMarchValid(GeneratorSettings settings, Drill drill, int sidelineDistance,
 	                             CardinalDirection currentDirection, RelativeDirection.YDirection yDirection,
 	                             int length) {
 		/* Cannot double backwards nor forwards march */
@@ -525,7 +525,7 @@ public class Generator2 {
 		
 		/* Don't run off of field */
 		if (!settings.assumeInfiniteField && currentDirection == CardinalDirection.NORTH
-				&& sidelineDistance - length * (yDirection == RelativeDirection.YDirection.BACKWARDS? -1 : 1) < 0) {
+				&& sidelineDistance - length * (yDirection == RelativeDirection.YDirection.BACKWARDS ? -1 : 1) < 0) {
 			return false;
 		}
 		

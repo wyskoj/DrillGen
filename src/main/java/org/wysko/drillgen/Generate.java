@@ -206,10 +206,10 @@ public class Generate extends JFrame {
 		addStepSizeAndLength(settings, sixToFiveCheckBox, sixteenToFiveList, StepSize.SIX_TO_FIVE);
 		addStepSizeAndLength(settings, twelveToFiveCheckBox, twelveToFiveList, StepSize.TWELVE_TO_FIVE);
 		
-		List<Stack<Fundamental>> drills = new ArrayList<>();
+		List<Drill> drills = new ArrayList<>();
 		boolean notEnoughUnique = false;
 		for (int i = 0; i < (Integer) numberOfDrillsSpinner.getValue(); i++) {
-			Stack<Fundamental> e1;
+			Drill e1;
 			int k = 0;
 			do {
 				k++;
@@ -227,7 +227,7 @@ public class Generate extends JFrame {
 					, "Generation failed", JOptionPane.WARNING_MESSAGE, UIManager.getIcon("OptionPane.warningIcon"));
 		}
 		
-		List<Stack<Fundamental>> nonNullDrills = drills.stream().filter(Objects::nonNull).collect(Collectors.toList());
+		List<Drill> nonNullDrills = drills.stream().filter(Objects::nonNull).collect(Collectors.toList());
 		if (nonNullDrills.isEmpty()) {
 			JOptionPane.showMessageDialog(this, "The generator couldn't generate any drills.",
 					"Generation failed", JOptionPane.ERROR_MESSAGE, UIManager.getIcon("OptionPane.errorIcon"));
@@ -237,8 +237,11 @@ public class Generate extends JFrame {
 					"Generation failed", JOptionPane.WARNING_MESSAGE, UIManager.getIcon("OptionPane.warningIcon"));
 		}
 		DefaultListModel<String> model = new DefaultListModel<>();
-		List<String> drillStrings = nonNullDrills.stream().map(Vector::toString).collect(Collectors.toList());
+		List<String> drillStrings =
+				nonNullDrills.stream().map(drill -> drill.asString(displayRockAndRollCheckBox.isSelected(),
+						showOnlyEightToFiveCheckBox.isSelected())).collect(Collectors.toList());
 		model.addAll(drillStrings);
+		
 		//noinspection unchecked
 		generatedDrillsList.setModel(model);
 	}
@@ -647,6 +650,7 @@ public class Generate extends JFrame {
 		allowBackwardsMarchFromBoxCheckBox = new JCheckBox();
 		allowFlanksIntoMarkTimesCheckBox = new JCheckBox();
 		stepSizesPanel = new JPanel();
+		label7 = new JLabel();
 		eightToFiveCheckBox = new JCheckBox();
 		scrollPane1 = new JScrollPane();
 		eightToFiveList = new JList<>();
@@ -676,6 +680,8 @@ public class Generate extends JFrame {
 		directionComboBox = new JComboBox<>();
 		panel10 = new JPanel();
 		flankToOriginalDirectionAfterBoxCheckBox = new JCheckBox();
+		displayRockAndRollCheckBox = new JCheckBox();
+		showOnlyEightToFiveCheckBox = new JCheckBox();
 		panel8 = new JPanel();
 		label6 = new JLabel();
 		numberOfDrillsSpinner = new JSpinner();
@@ -688,7 +694,7 @@ public class Generate extends JFrame {
 
 		//======== this ========
 		setTitle("Drill Generator");
-		Container contentPane = getContentPane();
+		var contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
 
 		//======== menuBar1 ========
@@ -913,16 +919,22 @@ public class Generate extends JFrame {
 					stepSizesPanel.setBorder(new TitledBorder("Step sizes"));
 					stepSizesPanel.setLayout(new GridBagLayout());
 					((GridBagLayout)stepSizesPanel.getLayout()).columnWidths = new int[] {95, 0, 132, 0, 0};
-					((GridBagLayout)stepSizesPanel.getLayout()).rowHeights = new int[] {0, 0, 0};
+					((GridBagLayout)stepSizesPanel.getLayout()).rowHeights = new int[] {0, 0, 0, 0};
 					((GridBagLayout)stepSizesPanel.getLayout()).columnWeights = new double[] {1.0, 0.0, 1.0, 0.0, 1.0E-4};
-					((GridBagLayout)stepSizesPanel.getLayout()).rowWeights = new double[] {1.0, 1.0, 1.0E-4};
+					((GridBagLayout)stepSizesPanel.getLayout()).rowWeights = new double[] {0.0, 1.0, 1.0, 1.0E-4};
+
+					//---- label7 ----
+					label7.setText("<html>Hold <i>Ctrl</i> while clicking to select multiple<br>lengths in the lists. Hold <i>Shift</i> to select ranges.");
+					stepSizesPanel.add(label7, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0,
+						GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+						new Insets(0, 0, 0, 0), 0, 0));
 
 					//---- eightToFiveCheckBox ----
 					eightToFiveCheckBox.setText("8:5");
 					eightToFiveCheckBox.setSelected(true);
 					eightToFiveCheckBox.addChangeListener(e -> stepSizeCheckBoxStateChanged(e));
 					eightToFiveCheckBox.addActionListener(e -> aChangeWasMade(e));
-					stepSizesPanel.add(eightToFiveCheckBox, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+					stepSizesPanel.add(eightToFiveCheckBox, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
 						GridBagConstraints.CENTER, GridBagConstraints.NONE,
 						new Insets(0, 0, 0, 0), 0, 0));
 
@@ -957,7 +969,7 @@ public class Generate extends JFrame {
 						eightToFiveList.addListSelectionListener(e -> listChanged(e));
 						scrollPane1.setViewportView(eightToFiveList);
 					}
-					stepSizesPanel.add(scrollPane1, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+					stepSizesPanel.add(scrollPane1, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
 						GridBagConstraints.CENTER, GridBagConstraints.NONE,
 						new Insets(0, 0, 0, 0), 0, 0));
 
@@ -965,7 +977,7 @@ public class Generate extends JFrame {
 					sixteenToFiveCheckBox.setText("16:5");
 					sixteenToFiveCheckBox.addChangeListener(e -> stepSizeCheckBoxStateChanged(e));
 					sixteenToFiveCheckBox.addActionListener(e -> aChangeWasMade(e));
-					stepSizesPanel.add(sixteenToFiveCheckBox, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
+					stepSizesPanel.add(sixteenToFiveCheckBox, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
 						GridBagConstraints.CENTER, GridBagConstraints.NONE,
 						new Insets(0, 0, 0, 0), 0, 0));
 
@@ -1001,7 +1013,7 @@ public class Generate extends JFrame {
 						sixteenToFiveList.addListSelectionListener(e -> listChanged(e));
 						scrollPane3.setViewportView(sixteenToFiveList);
 					}
-					stepSizesPanel.add(scrollPane3, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0,
+					stepSizesPanel.add(scrollPane3, new GridBagConstraints(3, 1, 1, 1, 0.0, 0.0,
 						GridBagConstraints.CENTER, GridBagConstraints.NONE,
 						new Insets(0, 0, 0, 0), 0, 0));
 
@@ -1009,7 +1021,7 @@ public class Generate extends JFrame {
 					sixToFiveCheckBox.setText("6:5");
 					sixToFiveCheckBox.addChangeListener(e -> stepSizeCheckBoxStateChanged(e));
 					sixToFiveCheckBox.addActionListener(e -> aChangeWasMade(e));
-					stepSizesPanel.add(sixToFiveCheckBox, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+					stepSizesPanel.add(sixToFiveCheckBox, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
 						GridBagConstraints.CENTER, GridBagConstraints.NONE,
 						new Insets(0, 0, 0, 0), 0, 0));
 
@@ -1045,7 +1057,7 @@ public class Generate extends JFrame {
 						sixToFiveList.addListSelectionListener(e -> listChanged(e));
 						scrollPane2.setViewportView(sixToFiveList);
 					}
-					stepSizesPanel.add(scrollPane2, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+					stepSizesPanel.add(scrollPane2, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
 						GridBagConstraints.CENTER, GridBagConstraints.NONE,
 						new Insets(0, 0, 0, 0), 0, 0));
 
@@ -1053,7 +1065,7 @@ public class Generate extends JFrame {
 					twelveToFiveCheckBox.setText("12:5");
 					twelveToFiveCheckBox.addChangeListener(e -> stepSizeCheckBoxStateChanged(e));
 					twelveToFiveCheckBox.addActionListener(e -> aChangeWasMade(e));
-					stepSizesPanel.add(twelveToFiveCheckBox, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+					stepSizesPanel.add(twelveToFiveCheckBox, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
 						GridBagConstraints.CENTER, GridBagConstraints.NONE,
 						new Insets(0, 0, 0, 0), 0, 0));
 
@@ -1089,7 +1101,7 @@ public class Generate extends JFrame {
 						twelveToFiveList.addListSelectionListener(e -> listChanged(e));
 						scrollPane4.setViewportView(twelveToFiveList);
 					}
-					stepSizesPanel.add(scrollPane4, new GridBagConstraints(3, 1, 1, 1, 0.0, 0.0,
+					stepSizesPanel.add(scrollPane4, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0,
 						GridBagConstraints.CENTER, GridBagConstraints.NONE,
 						new Insets(0, 0, 0, 0), 0, 0));
 				}
@@ -1161,9 +1173,9 @@ public class Generate extends JFrame {
 				panel7.setBorder(new TitledBorder("Settings"));
 				panel7.setLayout(new GridBagLayout());
 				((GridBagLayout)panel7.getLayout()).columnWidths = new int[] {0, 0};
-				((GridBagLayout)panel7.getLayout()).rowHeights = new int[] {0, 0, 0, 0};
+				((GridBagLayout)panel7.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0, 0};
 				((GridBagLayout)panel7.getLayout()).columnWeights = new double[] {1.0, 1.0E-4};
-				((GridBagLayout)panel7.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 1.0E-4};
+				((GridBagLayout)panel7.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
 				//---- assumeInfiniteFieldCheckBox ----
 				assumeInfiniteFieldCheckBox.setText("Assume infinite field");
@@ -1238,6 +1250,18 @@ public class Generate extends JFrame {
 				}
 				panel7.add(panel10, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
 					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 0), 0, 0));
+
+				//---- displayRockAndRollCheckBox ----
+				displayRockAndRollCheckBox.setText("Display implied rock & rolls (\"RR\")");
+				panel7.add(displayRockAndRollCheckBox, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 0), 0, 0));
+
+				//---- showOnlyEightToFiveCheckBox ----
+				showOnlyEightToFiveCheckBox.setText("Hide \"@8:5\" for drills with only 8:5");
+				panel7.add(showOnlyEightToFiveCheckBox, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
 			}
 			panel2.add(panel7, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
@@ -1305,7 +1329,7 @@ public class Generate extends JFrame {
 		setLocationRelativeTo(getOwner());
 
 		//---- presetsButtonGroup ----
-		ButtonGroup presetsButtonGroup = new ButtonGroup();
+		var presetsButtonGroup = new ButtonGroup();
 		presetsButtonGroup.add(beginnerRadioButton);
 		presetsButtonGroup.add(easyRadioButton);
 		presetsButtonGroup.add(mediumRadioButton);
@@ -1346,6 +1370,7 @@ public class Generate extends JFrame {
 	private JCheckBox allowBackwardsMarchFromBoxCheckBox;
 	private JCheckBox allowFlanksIntoMarkTimesCheckBox;
 	private JPanel stepSizesPanel;
+	private JLabel label7;
 	private JCheckBox eightToFiveCheckBox;
 	private JScrollPane scrollPane1;
 	private JList<String> eightToFiveList;
@@ -1375,6 +1400,8 @@ public class Generate extends JFrame {
 	private JComboBox<String> directionComboBox;
 	private JPanel panel10;
 	private JCheckBox flankToOriginalDirectionAfterBoxCheckBox;
+	private JCheckBox displayRockAndRollCheckBox;
+	private JCheckBox showOnlyEightToFiveCheckBox;
 	private JPanel panel8;
 	private JLabel label6;
 	private JSpinner numberOfDrillsSpinner;

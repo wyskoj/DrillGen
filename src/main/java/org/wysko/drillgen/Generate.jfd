@@ -148,17 +148,25 @@ new FormModel {
 						"$columnSpecs": "center:95:1.0, center:0, center:132:1.0, center:0"
 						"$alignTop": true
 						"$alignLeft": true
-						"$rowSpecs": "center:0:1.0, center:0:1.0"
+						"$rowSpecs": "0, center:0:1.0, center:0:1.0"
 					} ) {
 						name: "stepSizesPanel"
 						"border": new javax.swing.border.TitledBorder( "Step sizes" )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label7"
+							"text": "<html>Hold <i>Ctrl</i> while clicking to select multiple<br>lengths in the lists. Hold <i>Shift</i> to select ranges."
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+							"gridwidth": 4
+						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "eightToFiveCheckBox"
 							"text": "8:5"
 							"selected": true
 							addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "stepSizeCheckBoxStateChanged", true ) )
 							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+							"gridy": 1
+						} )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "scrollPane1"
 							add( new FormComponent( "javax.swing.JList" ) {
@@ -185,6 +193,7 @@ new FormModel {
 							} )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridx": 1
+							"gridy": 1
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "sixteenToFiveCheckBox"
@@ -193,6 +202,7 @@ new FormModel {
 							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridx": 2
+							"gridy": 1
 						} )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "scrollPane3"
@@ -204,6 +214,7 @@ new FormModel {
 							} )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridx": 3
+							"gridy": 1
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "sixToFiveCheckBox"
@@ -211,7 +222,7 @@ new FormModel {
 							addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "stepSizeCheckBoxStateChanged", true ) )
 							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 1
+							"gridy": 2
 						} )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 							name: "scrollPane2"
@@ -223,7 +234,7 @@ new FormModel {
 							} )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridx": 1
-							"gridy": 1
+							"gridy": 2
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "twelveToFiveCheckBox"
@@ -231,7 +242,7 @@ new FormModel {
 							addEvent( new FormEvent( "javax.swing.event.ChangeListener", "stateChanged", "stepSizeCheckBoxStateChanged", true ) )
 							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aChangeWasMade", true ) )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 1
+							"gridy": 2
 							"gridx": 2
 						} )
 						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
@@ -244,7 +255,7 @@ new FormModel {
 							} )
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 							"gridx": 3
-							"gridy": 1
+							"gridy": 2
 						} )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 2
@@ -313,7 +324,7 @@ new FormModel {
 					"gridx": 1
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$rowSpecs": "0, 0, 0"
+					"$rowSpecs": "0, 0, 0, 0, 0"
 					"$hGap": 5
 					"$vGap": 5
 					"$alignLeft": true
@@ -392,6 +403,18 @@ new FormModel {
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 2
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "displayRockAndRollCheckBox"
+						"text": "Display implied rock & rolls (\"RR\")"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 3
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "showOnlyEightToFiveCheckBox"
+						"text": "Hide \"@8:5\" for drills with only 8:5"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 4
 					} )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 					"gridx": 2
