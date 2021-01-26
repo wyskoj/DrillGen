@@ -25,11 +25,11 @@
 
 package org.wysko.drillgen;
 
-import org.wysko.drillgen.MarchingParameters.RelativeDirection;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Fundamental;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.Box;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.March;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Transition.Flank;
+import org.wysko.drillgen.MarchingParameters.RelativeDirection;
 import org.wysko.drillgen.MarchingParameters.StepSize;
 
 import java.io.FileNotFoundException;
@@ -37,7 +37,7 @@ import java.io.PrintStream;
 import java.util.*;
 
 /**
- * @deprecated Use {@link Generator2} instead.
+ * @deprecated Replaced by {@link Generator2}.
  */
 @Deprecated
 public class Generator {

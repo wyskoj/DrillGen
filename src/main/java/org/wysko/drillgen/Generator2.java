@@ -36,224 +36,18 @@ import org.wysko.drillgen.MarchingParameters.StepSize;
 import javax.annotation.Nullable;
 import java.util.*;
 
+/**
+ * Generates drills, customizable with {@link GeneratorSettings}.
+ */
 @SuppressWarnings("RedundantIfStatement")
 public class Generator2 {
 	
-	static class GeneratorSettings {
-		/**
-		 * List of valid fundamentals that can be generated.
-		 */
-		List<Class<? extends Fundamental>> validFundamentals;
-		/**
-		 * If true, the program will not consider that the band can run off the field. If false, the program takes
-		 * this into consideration and calculates available fundamentals based on {@link
-		 * GeneratorSettings#startingDirection} and
-		 * {@link GeneratorSettings#stepsFromSideline}.
-		 */
-		boolean assumeInfiniteField;
-		/**
-		 * The starting direction. Only used when {@link GeneratorSettings#assumeInfiniteField} is true.
-		 */
-		CardinalDirection startingDirection;
-		/**
-		 * The minimum number of fundamentals to appear in each drill.
-		 */
-		int minCountFundamentals;
-		/**
-		 * The maximum number of fundamentals to appear in each drill.
-		 */
-		int maxCountFundamentals;
-		/**
-		 * Allow backwards flanks? A backwards flank is one where the marching direction before the flank is
-		 * backwards or the marching direction after the flank is backwards.
-		 */
-		boolean allowBackwardsFlanks;
-		/**
-		 * The initial number of steps from the sideline. Only used when {@link GeneratorSettings#assumeInfiniteField}
-		 * is true.
-		 */
-		int stepsFromSideline;
-		/**
-		 * Allow a backwards march after coming out of a box?
-		 */
-		boolean allowBackwardsMarchFromBox;
-		/**
-		 * Allows flanks before mark times.
-		 */
-		boolean allowFlanksIntoMarkTimes;
-		/**
-		 * Adds another (implied) flank after a box.
-		 */
-		boolean flankToOriginalDirectionAfterBox;
-		/**
-		 * Valid lengths to use given the step size.
-		 */
-		HashMap<StepSize, List<Integer>> stepSizeLengths;
-		/**
-		 * Valid mark time lengths.
-		 */
-		List<Integer> validMarkTimeLengths;
-		
-		public GeneratorSettings() {
-			validFundamentals = new ArrayList<>();
-			stepSizeLengths = new HashMap<>();
-			validMarkTimeLengths = new ArrayList<>();
-		}
-		
-		public GeneratorSettings setValidFundamentals(List<Class<? extends Fundamental>> validFundamentals) {
-			this.validFundamentals = validFundamentals;
-			return this;
-		}
-		
-		public GeneratorSettings setAssumeInfiniteField(boolean assumeInfiniteField) {
-			this.assumeInfiniteField = assumeInfiniteField;
-			return this;
-		}
-		
-		public GeneratorSettings setStartingDirection(CardinalDirection startingDirection) {
-			this.startingDirection = startingDirection;
-			return this;
-		}
-		
-		public GeneratorSettings setMinCountFundamentals(int minCountFundamentals) {
-			this.minCountFundamentals = minCountFundamentals;
-			return this;
-		}
-		
-		public GeneratorSettings setMaxCountFundamentals(int maxCountFundamentals) {
-			this.maxCountFundamentals = maxCountFundamentals;
-			return this;
-		}
-		
-		public GeneratorSettings setAllowBackwardsFlanks(boolean allowBackwardsFlanks) {
-			this.allowBackwardsFlanks = allowBackwardsFlanks;
-			return this;
-		}
-		
-		public GeneratorSettings setStepsFromSideline(int stepsFromSideline) {
-			this.stepsFromSideline = stepsFromSideline;
-			return this;
-		}
-		
-		public GeneratorSettings setAllowBackwardsMarchFromBox(boolean allowBackwardsMarchFromBox) {
-			this.allowBackwardsMarchFromBox = allowBackwardsMarchFromBox;
-			return this;
-		}
-		
-		public GeneratorSettings setStepSizeLengths(HashMap<StepSize, List<Integer>> stepSizeLengths) {
-			this.stepSizeLengths = stepSizeLengths;
-			return this;
-		}
-		
-		public GeneratorSettings setValidMarkTimeLengths(List<Integer> validMarkTimeLengths) {
-			this.validMarkTimeLengths = validMarkTimeLengths;
-			return this;
-		}
-		
-		public GeneratorSettings setAllowFlanksIntoMarkTimes(boolean allowFlanksIntoMarkTimes) {
-			this.allowFlanksIntoMarkTimes = allowFlanksIntoMarkTimes;
-			return this;
-		}
-		
-		public GeneratorSettings setFlankToOriginalDirectionAfterBox(boolean flankToOriginalDirectionAfterBox) {
-			this.flankToOriginalDirectionAfterBox = flankToOriginalDirectionAfterBox;
-			return this;
-		}
-		
-		static final GeneratorSettings BEGINNER = new GeneratorSettings()
-				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class))
-				.setAssumeInfiniteField(false)
-				.setStartingDirection(null)
-				.setStepsFromSideline(0)
-				.setStartingDirection(CardinalDirection.WEST)
-				.setMinCountFundamentals(1)
-				.setMaxCountFundamentals(2)
-				.setAllowBackwardsFlanks(false)
-				.setAllowBackwardsMarchFromBox(false)
-				.setAllowFlanksIntoMarkTimes(false)
-				.setStepSizeLengths(new HashMap<>() {{
-					put(StepSize.EIGHT_TO_FIVE, Arrays.asList(4, 8));
-				}})
-				.setValidMarkTimeLengths(Arrays.asList(4, 8))
-				.setFlankToOriginalDirectionAfterBox(false);
-		
-		static final GeneratorSettings EASY = new GeneratorSettings()
-				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class, Flank.class))
-				.setAssumeInfiniteField(false)
-				.setStartingDirection(null)
-				.setStepsFromSideline(0)
-				.setStartingDirection(CardinalDirection.WEST)
-				.setMinCountFundamentals(2)
-				.setMaxCountFundamentals(3)
-				.setAllowBackwardsFlanks(false)
-				.setAllowBackwardsMarchFromBox(false)
-				.setAllowFlanksIntoMarkTimes(false)
-				.setStepSizeLengths(new HashMap<>() {{
-					put(StepSize.EIGHT_TO_FIVE, Arrays.asList(4, 8));
-				}})
-				.setValidMarkTimeLengths(Arrays.asList(4, 8))
-				.setFlankToOriginalDirectionAfterBox(false);
-		
-		static final GeneratorSettings MEDIUM = new GeneratorSettings()
-				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class, Flank.class, Box.class))
-				.setAssumeInfiniteField(false)
-				.setStartingDirection(null)
-				.setStepsFromSideline(0)
-				.setStartingDirection(CardinalDirection.WEST)
-				.setMinCountFundamentals(2)
-				.setMaxCountFundamentals(4)
-				.setAllowBackwardsFlanks(false)
-				.setAllowBackwardsMarchFromBox(false)
-				.setAllowFlanksIntoMarkTimes(true)
-				.setStepSizeLengths(new HashMap<>() {{
-					put(StepSize.EIGHT_TO_FIVE, Arrays.asList(4, 8, 16));
-					put(StepSize.SIXTEEN_TO_FIVE, Arrays.asList(8, 16));
-				}})
-				.setValidMarkTimeLengths(Arrays.asList(4, 8, 16))
-				.setFlankToOriginalDirectionAfterBox(false);
-		
-		static final GeneratorSettings HARD = new GeneratorSettings()
-				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class, Flank.class, Box.class))
-				.setAssumeInfiniteField(false)
-				.setStartingDirection(null)
-				.setStepsFromSideline(0)
-				.setStartingDirection(CardinalDirection.WEST)
-				.setMinCountFundamentals(3)
-				.setMaxCountFundamentals(4)
-				.setAllowBackwardsFlanks(true)
-				.setAllowBackwardsMarchFromBox(true)
-				.setAllowFlanksIntoMarkTimes(true)
-				.setStepSizeLengths(new HashMap<>() {{
-					put(StepSize.EIGHT_TO_FIVE, Arrays.asList(2, 4, 8, 16));
-					put(StepSize.SIXTEEN_TO_FIVE, Arrays.asList(8, 16));
-					put(StepSize.SIX_TO_FIVE, Arrays.asList(6, 12));
-				}})
-				.setValidMarkTimeLengths(Arrays.asList(2, 4, 8, 12, 16))
-				.setFlankToOriginalDirectionAfterBox(false);
-		
-		static final GeneratorSettings EXPERT = new GeneratorSettings()
-				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class, Flank.class, Box.class))
-				.setAssumeInfiniteField(false)
-				.setStartingDirection(null)
-				.setStepsFromSideline(0)
-				.setStartingDirection(CardinalDirection.WEST)
-				.setMinCountFundamentals(4)
-				.setMaxCountFundamentals(5)
-				.setAllowBackwardsFlanks(true)
-				.setAllowBackwardsMarchFromBox(true)
-				.setAllowFlanksIntoMarkTimes(true)
-				.setStepSizeLengths(new HashMap<>() {{
-					put(StepSize.EIGHT_TO_FIVE, Arrays.asList(2, 4, 6, 8, 16));
-					put(StepSize.SIXTEEN_TO_FIVE, Arrays.asList(4, 8, 16));
-					put(StepSize.SIX_TO_FIVE, Arrays.asList(3, 6, 12));
-					put(StepSize.TWELVE_TO_FIVE, Arrays.asList(6, 12));
-				}})
-				.setValidMarkTimeLengths(Arrays.asList(2, 4, 6, 8, 10, 12, 14, 16, 24, 32))
-				.setFlankToOriginalDirectionAfterBox(false);
+	static <T extends List<R>, R> R listRand(T list) {
+		return list.get((int) (Math.random() * list.size()));
 	}
 	
 	/**
-	 * Generates a {@link Stack<Fundamental>} that represents the drill, based on settings.
+	 * Generates a {@link Drill} that represents the drill, based on settings.
 	 *
 	 * @param settings the generator settings
 	 * @return the drill, null if the generation reaches an unmarchable state
@@ -331,7 +125,7 @@ public class Generator2 {
 				Box box = ((Box) e);
 				currentDirection = updateDirectionAfterBox(settings, currentDirection, box.direction);
 			}
-			
+
 //			System.out.printf("%s, distance %d, direction %s%n", drill.peek(), sidelineDistance, currentDirection);
 		}
 		return drill;
@@ -540,7 +334,214 @@ public class Generator2 {
 		return true;
 	}
 	
-	private static <T extends List<R>, R> R listRand(T list) {
-		return list.get((int) (Math.random() * list.size()));
+	/**
+	 * Provides settings for generating drills.
+	 */
+	static class GeneratorSettings {
+		static final GeneratorSettings BEGINNER = new GeneratorSettings()
+				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class))
+				.setAssumeInfiniteField(false)
+				.setStartingDirection(null)
+				.setStepsFromSideline(0)
+				.setStartingDirection(CardinalDirection.WEST)
+				.setMinCountFundamentals(1)
+				.setMaxCountFundamentals(2)
+				.setAllowBackwardsFlanks(false)
+				.setAllowBackwardsMarchFromBox(false)
+				.setAllowFlanksIntoMarkTimes(false)
+				.setStepSizeLengths(new HashMap<>() {{
+					put(StepSize.EIGHT_TO_FIVE, Arrays.asList(4, 8));
+				}})
+				.setValidMarkTimeLengths(Arrays.asList(4, 8))
+				.setFlankToOriginalDirectionAfterBox(false);
+		static final GeneratorSettings EASY = new GeneratorSettings()
+				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class, Flank.class))
+				.setAssumeInfiniteField(false)
+				.setStartingDirection(null)
+				.setStepsFromSideline(0)
+				.setStartingDirection(CardinalDirection.WEST)
+				.setMinCountFundamentals(2)
+				.setMaxCountFundamentals(3)
+				.setAllowBackwardsFlanks(false)
+				.setAllowBackwardsMarchFromBox(false)
+				.setAllowFlanksIntoMarkTimes(false)
+				.setStepSizeLengths(new HashMap<>() {{
+					put(StepSize.EIGHT_TO_FIVE, Arrays.asList(4, 8));
+				}})
+				.setValidMarkTimeLengths(Arrays.asList(4, 8))
+				.setFlankToOriginalDirectionAfterBox(false);
+		static final GeneratorSettings MEDIUM = new GeneratorSettings()
+				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class, Flank.class, Box.class))
+				.setAssumeInfiniteField(false)
+				.setStartingDirection(null)
+				.setStepsFromSideline(0)
+				.setStartingDirection(CardinalDirection.WEST)
+				.setMinCountFundamentals(2)
+				.setMaxCountFundamentals(4)
+				.setAllowBackwardsFlanks(false)
+				.setAllowBackwardsMarchFromBox(false)
+				.setAllowFlanksIntoMarkTimes(true)
+				.setStepSizeLengths(new HashMap<>() {{
+					put(StepSize.EIGHT_TO_FIVE, Arrays.asList(4, 8, 16));
+					put(StepSize.SIXTEEN_TO_FIVE, Arrays.asList(8, 16));
+				}})
+				.setValidMarkTimeLengths(Arrays.asList(4, 8, 16))
+				.setFlankToOriginalDirectionAfterBox(false);
+		static final GeneratorSettings HARD = new GeneratorSettings()
+				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class, Flank.class, Box.class))
+				.setAssumeInfiniteField(false)
+				.setStartingDirection(null)
+				.setStepsFromSideline(0)
+				.setStartingDirection(CardinalDirection.WEST)
+				.setMinCountFundamentals(3)
+				.setMaxCountFundamentals(4)
+				.setAllowBackwardsFlanks(true)
+				.setAllowBackwardsMarchFromBox(true)
+				.setAllowFlanksIntoMarkTimes(true)
+				.setStepSizeLengths(new HashMap<>() {{
+					put(StepSize.EIGHT_TO_FIVE, Arrays.asList(2, 4, 8, 16));
+					put(StepSize.SIXTEEN_TO_FIVE, Arrays.asList(8, 16));
+					put(StepSize.SIX_TO_FIVE, Arrays.asList(6, 12));
+				}})
+				.setValidMarkTimeLengths(Arrays.asList(2, 4, 8, 12, 16))
+				.setFlankToOriginalDirectionAfterBox(false);
+		static final GeneratorSettings EXPERT = new GeneratorSettings()
+				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class, Flank.class, Box.class))
+				.setAssumeInfiniteField(false)
+				.setStartingDirection(null)
+				.setStepsFromSideline(0)
+				.setStartingDirection(CardinalDirection.WEST)
+				.setMinCountFundamentals(4)
+				.setMaxCountFundamentals(5)
+				.setAllowBackwardsFlanks(true)
+				.setAllowBackwardsMarchFromBox(true)
+				.setAllowFlanksIntoMarkTimes(true)
+				.setStepSizeLengths(new HashMap<>() {{
+					put(StepSize.EIGHT_TO_FIVE, Arrays.asList(2, 4, 6, 8, 16));
+					put(StepSize.SIXTEEN_TO_FIVE, Arrays.asList(4, 8, 16));
+					put(StepSize.SIX_TO_FIVE, Arrays.asList(3, 6, 12));
+					put(StepSize.TWELVE_TO_FIVE, Arrays.asList(6, 12));
+				}})
+				.setValidMarkTimeLengths(Arrays.asList(2, 4, 6, 8, 10, 12, 14, 16, 24, 32))
+				.setFlankToOriginalDirectionAfterBox(false);
+		/**
+		 * List of valid fundamentals that can be generated.
+		 */
+		List<Class<? extends Fundamental>> validFundamentals;
+		/**
+		 * If true, the program will not consider that the band can run off the field. If false, the program takes
+		 * this into consideration and calculates available fundamentals based on {@link
+		 * GeneratorSettings#startingDirection} and
+		 * {@link GeneratorSettings#stepsFromSideline}.
+		 */
+		boolean assumeInfiniteField;
+		/**
+		 * The starting direction. Only used when {@link GeneratorSettings#assumeInfiniteField} is true.
+		 */
+		CardinalDirection startingDirection;
+		/**
+		 * The minimum number of fundamentals to appear in each drill.
+		 */
+		int minCountFundamentals;
+		/**
+		 * The maximum number of fundamentals to appear in each drill.
+		 */
+		int maxCountFundamentals;
+		/**
+		 * Allow backwards flanks? A backwards flank is one where the marching direction before the flank is
+		 * backwards or the marching direction after the flank is backwards.
+		 */
+		boolean allowBackwardsFlanks;
+		/**
+		 * The initial number of steps from the sideline. Only used when {@link GeneratorSettings#assumeInfiniteField}
+		 * is true.
+		 */
+		int stepsFromSideline;
+		/**
+		 * Allow a backwards march after coming out of a box?
+		 */
+		boolean allowBackwardsMarchFromBox;
+		/**
+		 * Allows flanks before mark times.
+		 */
+		boolean allowFlanksIntoMarkTimes;
+		/**
+		 * Adds another (implied) flank after a box.
+		 */
+		boolean flankToOriginalDirectionAfterBox;
+		/**
+		 * Valid lengths to use given the step size.
+		 */
+		HashMap<StepSize, List<Integer>> stepSizeLengths;
+		/**
+		 * Valid mark time lengths.
+		 */
+		List<Integer> validMarkTimeLengths;
+		
+		public GeneratorSettings() {
+			validFundamentals = new ArrayList<>();
+			stepSizeLengths = new HashMap<>();
+			validMarkTimeLengths = new ArrayList<>();
+		}
+		
+		public GeneratorSettings setValidFundamentals(List<Class<? extends Fundamental>> validFundamentals) {
+			this.validFundamentals = validFundamentals;
+			return this;
+		}
+		
+		public GeneratorSettings setAssumeInfiniteField(boolean assumeInfiniteField) {
+			this.assumeInfiniteField = assumeInfiniteField;
+			return this;
+		}
+		
+		public GeneratorSettings setStartingDirection(CardinalDirection startingDirection) {
+			this.startingDirection = startingDirection;
+			return this;
+		}
+		
+		public GeneratorSettings setMinCountFundamentals(int minCountFundamentals) {
+			this.minCountFundamentals = minCountFundamentals;
+			return this;
+		}
+		
+		public GeneratorSettings setMaxCountFundamentals(int maxCountFundamentals) {
+			this.maxCountFundamentals = maxCountFundamentals;
+			return this;
+		}
+		
+		public GeneratorSettings setAllowBackwardsFlanks(boolean allowBackwardsFlanks) {
+			this.allowBackwardsFlanks = allowBackwardsFlanks;
+			return this;
+		}
+		
+		public GeneratorSettings setStepsFromSideline(int stepsFromSideline) {
+			this.stepsFromSideline = stepsFromSideline;
+			return this;
+		}
+		
+		public GeneratorSettings setAllowBackwardsMarchFromBox(boolean allowBackwardsMarchFromBox) {
+			this.allowBackwardsMarchFromBox = allowBackwardsMarchFromBox;
+			return this;
+		}
+		
+		public GeneratorSettings setStepSizeLengths(HashMap<StepSize, List<Integer>> stepSizeLengths) {
+			this.stepSizeLengths = stepSizeLengths;
+			return this;
+		}
+		
+		public GeneratorSettings setValidMarkTimeLengths(List<Integer> validMarkTimeLengths) {
+			this.validMarkTimeLengths = validMarkTimeLengths;
+			return this;
+		}
+		
+		public GeneratorSettings setAllowFlanksIntoMarkTimes(boolean allowFlanksIntoMarkTimes) {
+			this.allowFlanksIntoMarkTimes = allowFlanksIntoMarkTimes;
+			return this;
+		}
+		
+		public GeneratorSettings setFlankToOriginalDirectionAfterBox(boolean flankToOriginalDirectionAfterBox) {
+			this.flankToOriginalDirectionAfterBox = flankToOriginalDirectionAfterBox;
+			return this;
+		}
 	}
 }

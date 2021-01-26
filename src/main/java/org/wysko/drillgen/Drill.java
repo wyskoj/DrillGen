@@ -35,28 +35,48 @@ import org.wysko.drillgen.MarchingParameters.StepSize;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ * A list of {@link Fundamental}.
+ */
 public class Drill {
-	private final List<Fundamental> drills;
+	/**
+	 * The {@link Fundamental}s of this drill.
+	 */
+	private final List<Fundamental> fundamentals;
 	
 	public Drill() {
-		this.drills = new ArrayList<>();
+		this.fundamentals = new ArrayList<>();
 	}
 	
+	/**
+	 * Adds a {@link Fundamental} to the end of the list.
+	 *
+	 * @param fundamental the fundamental to add
+	 */
 	public void add(Fundamental fundamental) {
-		drills.add(fundamental);
+		fundamentals.add(fundamental);
 	}
 	
+	/**
+	 * @return the fundamental at the end of the list
+	 */
 	public Fundamental peek() {
-		return drills.get(drills.size() - 1);
+		return fundamentals.get(fundamentals.size() - 1);
 	}
 	
+	/**
+	 * @param showRockAndRolls              show {@link RockAndRoll}s "RR" where implied
+	 * @param showStepSizeIfOnlyEightToFive show step size on drills with only {@link StepSize#EIGHT_TO_FIVE}
+	 * @return the formatted string
+	 */
 	public String asString(boolean showRockAndRolls, boolean showStepSizeIfOnlyEightToFive) {
 		String s;
 		if (!showRockAndRolls) {
-			s = drills.toString();
+			s = fundamentals.toString();
 		} else {
-			List<Fundamental> temp = new ArrayList<>(drills);
+			List<Fundamental> temp = new ArrayList<>(fundamentals);
 			for (int i = 0; i < temp.size(); i++) {
 				if (i + 1 >= temp.size()) break;
 				if (
@@ -77,7 +97,7 @@ public class Drill {
 			s = temp.toString();
 		}
 		if (showStepSizeIfOnlyEightToFive) {
-			boolean allEightToFive = drills
+			boolean allEightToFive = fundamentals
 					.stream()
 					.filter(fundamental -> fundamental instanceof MovingFundamental)
 					.noneMatch(fundamental -> ((MovingFundamental) fundamental).stepSize != StepSize.EIGHT_TO_FIVE);
@@ -88,7 +108,23 @@ public class Drill {
 		return s;
 	}
 	
+	/**
+	 * @return true if the drill contains no fundamentals, false otherwise
+	 */
 	public boolean isEmpty() {
-		return drills.isEmpty();
+		return fundamentals.isEmpty();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Drill drill = (Drill) o;
+		return Objects.equals(fundamentals, drill.fundamentals);
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(fundamentals);
 	}
 }

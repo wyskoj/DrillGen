@@ -28,8 +28,18 @@ package org.wysko.drillgen;
 import processing.core.PApplet;
 import processing.core.PShape;
 
+/**
+ * Visually displays drills.
+ *
+ * @deprecated
+ */
 @Deprecated
 public class DrillViewer extends PApplet {
+	
+	/**
+	 * The left flank SVG object.
+	 */
+	PShape leftFlank;
 	
 	public static void main(String[] args) {
 		PApplet.main("org.wysko.drillgen.DrillViewer");
@@ -47,31 +57,36 @@ public class DrillViewer extends PApplet {
 		leftFlank = loadShape(getClass().getResource("/leftarrow.svg").getPath());
 	}
 	
-	PShape leftFlank;
-	
 	@Override
 	public void draw() {
 		background(255, 255, 255);
 		drawField();
-		drawDashedLine(new FieldCoordinate(0,0),new FieldCoordinate(-3,0));
+		drawDashedLine(new FieldCoordinate(0, 0), new FieldCoordinate(-3, 0));
 		drawStart(new FieldCoordinate(0, 0));
-		drawLeftFlank(new FieldCoordinate(-3,0), EndFlankDir.S);
+		drawLeftFlank(new FieldCoordinate(-3, 0), EndFlankDir.S);
 	}
 	
-	enum EndFlankDir {
-		N,S,E,W;
-	}
-	
+	/**
+	 * Draws a left flank.
+	 *
+	 * @param coordinate  the coordinate to draw
+	 * @param endFlankDir the ending direction of the flank
+	 */
 	public void drawLeftFlank(FieldCoordinate coordinate, EndFlankDir endFlankDir) {
 		final PixelCoordinate p = coordinate.toPixelCoordinate();
 		rotate(radians(45));
-		shape(leftFlank,p.x,p.y,50,50);
+		shape(leftFlank, p.x, p.y, 50, 50);
 	}
 	
-	
+	/**
+	 * Draws a dashed line from the start to the end {@link FieldCoordinate}s.
+	 *
+	 * @param start the start
+	 * @param end   the end
+	 */
 	public void drawDashedLine(FieldCoordinate start, FieldCoordinate end) {
 		double distance = FieldCoordinate.distance(start, end);
-		stroke(255,0, 0);
+		stroke(255, 0, 0);
 		strokeWeight(3);
 		for (double d = 0; d + 0.01 < 1; d += 0.2 / distance) {
 			final FieldCoordinate lerp = FieldCoordinate.lerp(start, end, d);
@@ -82,6 +97,11 @@ public class DrillViewer extends PApplet {
 		}
 	}
 	
+	/**
+	 * Draws the start at the specified coordinate.
+	 *
+	 * @param coordinate the coordinate to draw the start
+	 */
 	public void drawStart(FieldCoordinate coordinate) {
 		// Draw circle
 		final PixelCoordinate p = coordinate.toPixelCoordinate();
@@ -91,6 +111,9 @@ public class DrillViewer extends PApplet {
 		ellipse(p.x, p.y, 20, 20);
 	}
 	
+	/**
+	 * Draws the field.
+	 */
 	public void drawField() {
 		// Draw grid lines
 		strokeWeight(2);
@@ -115,19 +138,69 @@ public class DrillViewer extends PApplet {
 		}
 	}
 	
+	/**
+	 * Direction after flanking.
+	 */
+	enum EndFlankDir {
+		/**
+		 * North.
+		 */
+		N,
+		/**
+		 * South.
+		 */
+		S,
+		/**
+		 * East.
+		 */
+		E,
+		/**
+		 * West.
+		 */
+		W;
+	}
+	
+	/**
+	 * A coordinate of the field. Intersection of 50 yard line and home sideline is (0, 0).
+	 */
 	static class FieldCoordinate {
+		/**
+		 * The x-coordinate of the field.
+		 */
 		final double x;
+		/**
+		 * The y-coordinate of the field.
+		 */
 		final double y;
 		
+		/**
+		 * @param x the x-coordinate of the field
+		 * @param y the y-coordinate of the field
+		 */
 		public FieldCoordinate(double x, double y) {
 			this.x = x;
 			this.y = y;
 		}
 		
+		/**
+		 * Calculates the distance between two {@code FieldCoordinate}s.
+		 *
+		 * @param a the first coordinate
+		 * @param b the second coordinate
+		 * @return the distance, in terms of 4 steps.
+		 */
 		static double distance(FieldCoordinate a, FieldCoordinate b) {
 			return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 		}
 		
+		/**
+		 * Linearly interpolates between two {@code FieldCoordinate}s.
+		 *
+		 * @param a the first coordinate
+		 * @param b the second coordinate
+		 * @param x the value of interpolation (0 = a, 1 = b)
+		 * @return the linear interpolation
+		 */
 		static FieldCoordinate lerp(FieldCoordinate a, FieldCoordinate b, double x) {
 			return new FieldCoordinate(
 					((b.x - a.x) * x) + a.x,
@@ -135,15 +208,31 @@ public class DrillViewer extends PApplet {
 			);
 		}
 		
+		/**
+		 * @return this as a {@link PixelCoordinate}
+		 */
 		PixelCoordinate toPixelCoordinate() {
 			return new PixelCoordinate((int) ((x * 50) + 200), (int) ((y * 50) + 20));
 		}
 	}
 	
+	/**
+	 * A coordinate on the screen.
+	 */
 	static class PixelCoordinate {
+		/**
+		 * The x-coordinate of the screen.
+		 */
 		final int x;
+		/**
+		 * The y-coordinate of the screen.
+		 */
 		final int y;
 		
+		/**
+		 * @param x the x-coordinate of the screen
+		 * @param y the y-coordinate of the screen
+		 */
 		public PixelCoordinate(int x, int y) {
 			this.x = x;
 			this.y = y;

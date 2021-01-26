@@ -5,7 +5,8 @@ new FormModel {
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 			name: "this"
-			"title": "Drill Generator"
+			"title": "DrillGen"
+			"iconImage": new com.jformdesigner.model.SwingIcon( 0, "/logo.png" )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
 				"$columnSpecs": "0, 0, 0"
 				"$rowSpecs": "267, 288"
@@ -549,6 +550,12 @@ new FormModel {
 						name: "helpMenuItem"
 						"text": "Help"
 						"icon": new com.jformdesigner.model.SwingIcon( 0, "/help.png" )
+					} )
+					add( new FormComponent( "org.wysko.drillgen.MenuItemResizedIcon" ) {
+						name: "aboutMenuItem"
+						"text": "About"
+						"icon": new com.jformdesigner.model.SwingIcon( 0, "/about.png" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aboutMenuItemActionPerformed", true ) )
 					} )
 				} )
 			}

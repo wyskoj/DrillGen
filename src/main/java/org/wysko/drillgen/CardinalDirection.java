@@ -25,6 +25,24 @@
 
 package org.wysko.drillgen;
 
+/**
+ * A cardinal direction.
+ */
 public enum CardinalDirection {
-	NORTH, EAST, SOUTH, WEST;
+	/**
+	 * North.
+	 */
+	NORTH,
+	/**
+	 * East.
+	 */
+	EAST,
+	/**
+	 * South.
+	 */
+	SOUTH,
+	/**
+	 * West.
+	 */
+	WEST
 }

@@ -37,7 +37,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 import org.ini4j.Ini;
-import org.wysko.drillgen.MarchingParameters.Fundamentals.Fundamental;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.Box;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.March;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Stationary.MarkTime;
@@ -58,8 +57,6 @@ import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
@@ -68,14 +65,17 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
+ * GUI to generate drills.
+ *
  * @author Jacob Wysko
  */
 public class Generate extends JFrame {
+	static Generate generate;
+	
 	public static void main(String[] args) {
-		Generate generate = new Generate();
+		generate = new Generate();
 		generate.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		generate.setVisible(true);
-		
 	}
 	
 	private void setEnabledContainer(Container container, boolean enabled) {
@@ -93,21 +93,6 @@ public class Generate extends JFrame {
 	
 	public Generate() {
 		FlatDarculaLaf.install();
-//		try {
-//			for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-//				if ("Nimbus".equals(info.getName())) {
-//					UIManager.setLookAndFeel(info.getClassName());
-//					break;
-//				}
-//			}
-//		} catch (Exception ignored) {
-//		}
-//		try {
-//			UIManager.setLookAndFeel(
-//					UIManager.getSystemLookAndFeelClassName());
-//		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
-//			e.printStackTrace();
-//		}
 		initComponents();
 		setEnabledContainer(startingPositionPanel, false);
 		selectValuesInStepSizeList(Generator2.GeneratorSettings.BEGINNER, StepSize.EIGHT_TO_FIVE, eightToFiveList);
@@ -418,7 +403,7 @@ public class Generate extends JFrame {
 									"OptionPane.warningIcon"));
 				}
 			} catch (Exception exception) {
-				showExceptionWithFrame(exception);
+				Utils.showExceptionWithFrame(exception);
 			}
 			
 		}
@@ -440,7 +425,7 @@ public class Generate extends JFrame {
 			PdfWriter.getInstance(document, new FileOutputStream(pdfPath));
 			document.open();
 			Paragraph header = new Paragraph();
-			header.setFont(FontFactory.getFont("Arial", 20f, BaseColor.BLACK));
+			header.setFont(FontFactory.getFont(FontFactory.HELVETICA_BOLD, 20f, BaseColor.BLACK));
 			header.setSpacingAfter(20f);
 			header.add("Marching Band Drills");
 			header.setAlignment(Element.ALIGN_CENTER);
@@ -463,12 +448,16 @@ public class Generate extends JFrame {
 					pj.setPageable(new PDFPageable(pdf));
 					pj.print();
 				} catch (PrinterException exc) {
+					final ExceptionViewer message = new ExceptionViewer();
+					message.setExceptionTextArea(exc.getMessage());
+					JOptionPane.showMessageDialog(this, message, "Print error", JOptionPane.ERROR_MESSAGE, UIManager.getIcon(
+							"OptionPane.errorIcon"));
 					exc.printStackTrace();
 				}
 			}
 			pdf.close();
 		} catch (Exception ex) {
-			showExceptionWithFrame(ex);
+			Utils.showExceptionWithFrame(ex);
 		} finally {
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		}
@@ -479,23 +468,7 @@ public class Generate extends JFrame {
 	}
 	
 	private void viewBookMenuItemActionPerformed(ActionEvent e) {
-		Desktop desktop = java.awt.Desktop.getDesktop();
-		try {
-			//specify the protocol along with the URL
-			URI oURL = new URI(
-					"https://wyskoj.github.io/haslettvmbdocs/");
-			desktop.browse(oURL);
-		} catch (URISyntaxException | IOException exec) {
-			showExceptionWithFrame(exec);
-			exec.printStackTrace();
-		}
-	}
-	
-	private void showExceptionWithFrame(Exception exec) {
-		ExceptionViewer exceptionViewer = new ExceptionViewer();
-		exceptionViewer.setExceptionTextArea(exec.toString());
-		JOptionPane.showMessageDialog(this, exceptionViewer, "Error", JOptionPane.ERROR_MESSAGE, UIManager.getIcon(
-				"OptionPane.errorIcon"));
+		Utils.displayWebpage("https://wyskoj.github.io/haslettvmbdocs");
 	}
 	
 	final FileFilter dginiFileFilter = new FileFilter() {
@@ -548,7 +521,7 @@ public class Generate extends JFrame {
 				setCustomRadioEnabled();
 			}
 		} catch (IOException ioException) {
-			showExceptionWithFrame(ioException);
+			Utils.showExceptionWithFrame(ioException);
 			ioException.printStackTrace();
 		}
 		
@@ -606,7 +579,7 @@ public class Generate extends JFrame {
 			}
 			
 		} catch (IOException ioException) {
-			showExceptionWithFrame(ioException);
+			Utils.showExceptionWithFrame(ioException);
 			ioException.printStackTrace();
 		}
 	}
@@ -617,6 +590,11 @@ public class Generate extends JFrame {
 			lengths.add(Integer.valueOf(s));
 		}
 		return lengths;
+	}
+	
+	private void aboutMenuItemActionPerformed(ActionEvent e) {
+		About about = new About();
+		about.setVisible(true);
 	}
 	
 	private void initComponents() {
@@ -633,6 +611,7 @@ public class Generate extends JFrame {
 		menu3 = new JMenu();
 		viewBookMenuItem = new MenuItemResizedIcon();
 		helpMenuItem = new MenuItemResizedIcon();
+		aboutMenuItem = new MenuItemResizedIcon();
 		panel2 = new JPanel();
 		panel4 = new JPanel();
 		fundamentalsPanel = new JPanel();
@@ -691,15 +670,16 @@ public class Generate extends JFrame {
 		generateButton = new JButton();
 		separator1 = new JSeparator();
 		copyToClipboardButton = new JButton();
-
+		
 		//======== this ========
-		setTitle("Drill Generator");
+		setTitle("DrillGen");
+		setIconImage(new ImageIcon(getClass().getResource("/logo.png")).getImage());
 		var contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
-
+		
 		//======== menuBar1 ========
 		{
-
+			
 			//======== menu1 ========
 			{
 				menu1.setText("File");
@@ -752,17 +732,23 @@ public class Generate extends JFrame {
 			//======== menu3 ========
 			{
 				menu3.setText("Help");
-
+				
 				//---- viewBookMenuItem ----
 				viewBookMenuItem.setText("View book");
 				viewBookMenuItem.setIcon(new ImageIcon(getClass().getResource("/book.png")));
 				viewBookMenuItem.addActionListener(e -> viewBookMenuItemActionPerformed(e));
 				menu3.add(viewBookMenuItem);
-
+				
 				//---- helpMenuItem ----
 				helpMenuItem.setText("Help");
 				helpMenuItem.setIcon(new ImageIcon(getClass().getResource("/help.png")));
 				menu3.add(helpMenuItem);
+				
+				//---- aboutMenuItem ----
+				aboutMenuItem.setText("About");
+				aboutMenuItem.setIcon(new ImageIcon(getClass().getResource("/about.png")));
+				aboutMenuItem.addActionListener(e -> aboutMenuItemActionPerformed(e));
+				menu3.add(aboutMenuItem);
 			}
 			menuBar1.add(menu3);
 		}
@@ -1353,6 +1339,7 @@ public class Generate extends JFrame {
 	private JMenu menu3;
 	private MenuItemResizedIcon viewBookMenuItem;
 	private MenuItemResizedIcon helpMenuItem;
+	private MenuItemResizedIcon aboutMenuItem;
 	private JPanel panel2;
 	private JPanel panel4;
 	private JPanel fundamentalsPanel;

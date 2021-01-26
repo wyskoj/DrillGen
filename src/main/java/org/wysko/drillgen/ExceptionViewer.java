@@ -29,10 +29,12 @@
 
 package org.wysko.drillgen;
 
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
 
 /**
+ * Shows an exception, typically in a {@link JOptionPane}.
+ *
  * @author Jacob Wysko
  */
 public class ExceptionViewer extends JPanel {

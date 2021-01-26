@@ -1,0 +1,98 @@
+JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.9.1" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"$sizePolicy": 1
+			"title": "About DrillGen"
+			"resizable": false
+			"iconImage": new com.jformdesigner.model.SwingIcon( 0, "/logo.png" )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+				"$columnSpecs": "0:1.0"
+				"$rowSpecs": "bottom:126, 38, 30, 30, 19, 35, 0, 0, 0"
+				"$alignTop": true
+				"$alignLeft": true
+			} ) {
+				name: "this2"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/logo.png" )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"hAlign": 0
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label2"
+					"text": "DrillGen"
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 0, false )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 1
+					"hAlign": 0
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label3"
+					"text": "v 0.0.1"
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 2
+					"hAlign": 0
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label4"
+					"text": "Generates marching band drills."
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 3
+					"hAlign": 0
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "websiteLabel"
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Segoe UI", 0, 0, false )
+					"background": &SwingColor0 new com.jformdesigner.model.SwingColor( "EditorPane.background" )
+					"text": "<html><a href>Website</a></html>"
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseEntered", "websiteLabelMouseEntered", true ) )
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseExited", "websiteLabelMouseExited", true ) )
+					addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "websiteLabelMouseClicked", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 4
+					"hAlign": 0
+					"vAlign": 0
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label6"
+					"text": "<html>Copyright &copy; 2021 Jacob Wysko</html>"
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -2, false )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 5
+					"hAlign": 0
+					"vAlign": 0
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label7"
+					"text": "<html>This program comes with absolutely no warranty.</html>\n"
+					"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, -2, false )
+					"horizontalAlignment": 0
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 6
+					"hAlign": 0
+				} )
+				add( new FormComponent( "javax.swing.JEditorPane" ) {
+					name: "label9"
+					"font": new com.jformdesigner.model.SwingDerivedFont( "Segoe UI", 0, -2, false )
+					"background": #SwingColor0
+					"contentType": "text/html"
+					"text": "See the <a href=\"https://www.gnu.org/licenses/gpl-3.0.html\">GNU General Public License</a>, version 3 or later for details."
+					"editable": false
+					addEvent( new FormEvent( "javax.swing.event.HyperlinkListener", "hyperlinkUpdate", "gnuHyperlink", true ) )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 8
+					"hAlign": 0
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 35 )
+			"size": new java.awt.Dimension( 445, 365 )
+		} )
+	}
+}

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020 Jacob Wysko
+ * Copyright (c) 2021 Jacob Wysko
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,5 +25,11 @@
 
 package org.wysko.drillgen;
 
+/**
+ * Thrown when step size and difficulty are invalid combinations.
+ *
+ * @deprecated
+ */
+@Deprecated
 public class InvalidDifficultyStepSizeCombo extends Exception {
 }

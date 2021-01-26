@@ -27,22 +27,28 @@ package org.wysko.drillgen;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.Serializable;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
-/**
- * {@link JMenuItem} with an icon that automatically resizes to 20px by 20px.
- */
-public class MenuItemResizedIcon extends JMenuItem implements Serializable {
-	/**
-	 * Sole constructor.
-	 */
-	public MenuItemResizedIcon() {
+public class Utils {
+	public static void displayWebpage(String url) {
+		Desktop desktop = java.awt.Desktop.getDesktop();
+		try {
+			//specify the protocol along with the URL
+			URI oURL = new URI(url);
+			desktop.browse(oURL);
+		} catch (URISyntaxException | IOException exec) {
+			showExceptionWithFrame(exec);
+			exec.printStackTrace();
+		}
 	}
 	
-	@Override
-	public void setIcon(Icon defaultIcon) {
-		/* Why isn't this a thing already */
-		final ImageIcon defaultIcon1 = new ImageIcon(((ImageIcon) defaultIcon).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-		super.setIcon(defaultIcon1);
+	public static void showExceptionWithFrame(Exception exec) {
+		ExceptionViewer exceptionViewer = new ExceptionViewer();
+		exceptionViewer.setExceptionTextArea(exec.toString());
+		JOptionPane.showMessageDialog(Generate.generate, exceptionViewer, "Error", JOptionPane.ERROR_MESSAGE,
+				UIManager.getIcon(
+						"OptionPane.errorIcon"));
 	}
 }
