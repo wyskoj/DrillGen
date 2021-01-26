@@ -670,16 +670,16 @@ public class Generate extends JFrame {
 		generateButton = new JButton();
 		separator1 = new JSeparator();
 		copyToClipboardButton = new JButton();
-		
+
 		//======== this ========
 		setTitle("DrillGen");
 		setIconImage(new ImageIcon(getClass().getResource("/logo.png")).getImage());
 		var contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
-		
+
 		//======== menuBar1 ========
 		{
-			
+
 			//======== menu1 ========
 			{
 				menu1.setText("File");
@@ -732,18 +732,18 @@ public class Generate extends JFrame {
 			//======== menu3 ========
 			{
 				menu3.setText("Help");
-				
+
 				//---- viewBookMenuItem ----
 				viewBookMenuItem.setText("View book");
 				viewBookMenuItem.setIcon(new ImageIcon(getClass().getResource("/book.png")));
 				viewBookMenuItem.addActionListener(e -> viewBookMenuItemActionPerformed(e));
 				menu3.add(viewBookMenuItem);
-				
+
 				//---- helpMenuItem ----
 				helpMenuItem.setText("Help");
 				helpMenuItem.setIcon(new ImageIcon(getClass().getResource("/help.png")));
 				menu3.add(helpMenuItem);
-				
+
 				//---- aboutMenuItem ----
 				aboutMenuItem.setText("About");
 				aboutMenuItem.setIcon(new ImageIcon(getClass().getResource("/about.png")));

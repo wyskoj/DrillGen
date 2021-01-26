@@ -80,7 +80,7 @@ new FormModel {
 					"font": new com.jformdesigner.model.SwingDerivedFont( "Segoe UI", 0, -2, false )
 					"background": #SwingColor0
 					"contentType": "text/html"
-					"text": "See the <a href=\"https://www.gnu.org/licenses/gpl-3.0.html\">GNU General Public License</a>, version 3 or later for details."
+					"text": "See the <a href=\"https://opensource.org/licenses/MIT\">MIT License</a> for details."
 					"editable": false
 					addEvent( new FormEvent( "javax.swing.event.HyperlinkListener", "hyperlinkUpdate", "gnuHyperlink", true ) )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {

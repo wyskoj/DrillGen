@@ -90,47 +90,47 @@ public class About extends JFrame {
 		label6 = new JLabel();
 		label7 = new JLabel();
 		label9 = new JEditorPane();
-		
+
 		//======== this ========
 		setTitle("About DrillGen");
 		setResizable(false);
 		setIconImage(new ImageIcon(getClass().getResource("/logo.png")).getImage());
 		var contentPane = getContentPane();
 		contentPane.setLayout(new BorderLayout());
-		
+
 		//======== this2 ========
 		{
 			this2.setLayout(new GridBagLayout());
-			((GridBagLayout) this2.getLayout()).columnWidths = new int[] {0, 0};
-			((GridBagLayout) this2.getLayout()).rowHeights = new int[] {126, 38, 30, 30, 19, 35, 0, 0, 0, 0};
-			((GridBagLayout) this2.getLayout()).columnWeights = new double[] {1.0, 1.0E-4};
-			((GridBagLayout) this2.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
-			
+			((GridBagLayout)this2.getLayout()).columnWidths = new int[] {0, 0};
+			((GridBagLayout)this2.getLayout()).rowHeights = new int[] {126, 38, 30, 30, 19, 35, 0, 0, 0, 0};
+			((GridBagLayout)this2.getLayout()).columnWeights = new double[] {1.0, 1.0E-4};
+			((GridBagLayout)this2.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+
 			//---- label1 ----
 			label1.setIcon(new ImageIcon(getClass().getResource("/logo.png")));
 			this2.add(label1, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
-					GridBagConstraints.SOUTH, GridBagConstraints.NONE,
-					new Insets(0, 0, 0, 0), 0, 0));
-			
+				GridBagConstraints.SOUTH, GridBagConstraints.NONE,
+				new Insets(0, 0, 0, 0), 0, 0));
+
 			//---- label2 ----
 			label2.setText("DrillGen");
 			label2.setFont(label2.getFont().deriveFont(label2.getFont().getStyle() | Font.BOLD));
 			this2.add(label2, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
-					new Insets(0, 0, 0, 0), 0, 0));
-			
+				GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
+				new Insets(0, 0, 0, 0), 0, 0));
+
 			//---- label3 ----
 			label3.setText("v 0.0.1");
 			this2.add(label3, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
-					new Insets(0, 0, 0, 0), 0, 0));
-			
+				GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
+				new Insets(0, 0, 0, 0), 0, 0));
+
 			//---- label4 ----
 			label4.setText("Generates marching band drills.");
 			this2.add(label4, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
-					new Insets(0, 0, 0, 0), 0, 0));
-			
+				GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
+				new Insets(0, 0, 0, 0), 0, 0));
+
 			//---- websiteLabel ----
 			websiteLabel.setFont(new Font("Segoe UI", websiteLabel.getFont().getStyle(), websiteLabel.getFont().getSize()));
 			websiteLabel.setBackground(UIManager.getColor("EditorPane.background"));
@@ -140,46 +140,44 @@ public class About extends JFrame {
 				public void mouseClicked(MouseEvent e) {
 					websiteLabelMouseClicked(e);
 				}
-				
 				@Override
 				public void mouseEntered(MouseEvent e) {
 					websiteLabelMouseEntered(e);
 				}
-				
 				@Override
 				public void mouseExited(MouseEvent e) {
 					websiteLabelMouseExited(e);
 				}
 			});
 			this2.add(websiteLabel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.NONE,
-					new Insets(0, 0, 0, 0), 0, 0));
-			
+				GridBagConstraints.CENTER, GridBagConstraints.NONE,
+				new Insets(0, 0, 0, 0), 0, 0));
+
 			//---- label6 ----
 			label6.setText("<html>Copyright &copy; 2021 Jacob Wysko</html>");
 			label6.setFont(label6.getFont().deriveFont(label6.getFont().getSize() - 2f));
 			this2.add(label6, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.NONE,
-					new Insets(0, 0, 0, 0), 0, 0));
-			
+				GridBagConstraints.CENTER, GridBagConstraints.NONE,
+				new Insets(0, 0, 0, 0), 0, 0));
+
 			//---- label7 ----
 			label7.setText("<html>This program comes with absolutely no warranty.</html>\n");
 			label7.setFont(label7.getFont().deriveFont(label7.getFont().getSize() - 2f));
 			label7.setHorizontalAlignment(SwingConstants.CENTER);
 			this2.add(label7, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
-					new Insets(0, 0, 0, 0), 0, 0));
-			
+				GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
+				new Insets(0, 0, 0, 0), 0, 0));
+
 			//---- label9 ----
 			label9.setFont(new Font("Segoe UI", label9.getFont().getStyle(), label9.getFont().getSize() - 2));
 			label9.setBackground(UIManager.getColor("EditorPane.background"));
 			label9.setContentType("text/html");
-			label9.setText("See the <a href=\"https://www.gnu.org/licenses/gpl-3.0.html\">GNU General Public License</a>, version 3 or later for details.");
+			label9.setText("See the <a href=\"https://opensource.org/licenses/MIT\">MIT License</a> for details.");
 			label9.setEditable(false);
 			label9.addHyperlinkListener(e -> gnuHyperlink(e));
 			this2.add(label9, new GridBagConstraints(0, 8, 1, 1, 0.0, 0.0,
-					GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
-					new Insets(0, 0, 0, 0), 0, 0));
+				GridBagConstraints.CENTER, GridBagConstraints.VERTICAL,
+				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		contentPane.add(this2, BorderLayout.CENTER);
 		setSize(445, 365);
