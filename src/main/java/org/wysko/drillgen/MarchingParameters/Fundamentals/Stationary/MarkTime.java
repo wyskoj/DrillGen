@@ -27,12 +27,18 @@ package org.wysko.drillgen.MarchingParameters.Fundamentals.Stationary;
 
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Fundamental;
 
+/**
+ * Rhythmic, periodic alternations of rotation of knees and feet.
+ */
 public class MarkTime extends Fundamental {
 	/**
 	 * How long to mark time for.
 	 */
 	public final int length;
 	
+	/**
+	 * @param length how long to mark time for
+	 */
 	public MarkTime(int length) {
 		this.length = length;
 	}

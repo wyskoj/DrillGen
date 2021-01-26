@@ -25,7 +25,7 @@
 
 package org.wysko.drillgen.MarchingParameters.Fundamentals.Transition;
 
-import org.wysko.drillgen.MarchingParameters.RelativeDirection;
+import org.wysko.drillgen.MarchingParameters.Direction.RelativeDirection;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Fundamental;
 
 /**

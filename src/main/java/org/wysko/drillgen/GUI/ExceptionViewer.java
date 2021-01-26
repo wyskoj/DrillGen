@@ -27,7 +27,7 @@
  * Created by JFormDesigner on Mon Jan 18 16:52:22 EST 2021
  */
 
-package org.wysko.drillgen;
+package org.wysko.drillgen.GUI;
 
 import javax.swing.*;
 import java.awt.*;

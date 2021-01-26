@@ -27,7 +27,7 @@
  * Created by JFormDesigner on Sun Jan 17 15:25:59 EST 2021
  */
 
-package org.wysko.drillgen;
+package org.wysko.drillgen.GUI;
 
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.itextpdf.text.Font;
@@ -37,6 +37,8 @@ import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPageable;
 import org.ini4j.Ini;
+import org.wysko.drillgen.*;
+import org.wysko.drillgen.MarchingParameters.Direction.CardinalDirection;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.Box;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.March;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Stationary.MarkTime;
@@ -70,10 +72,9 @@ import java.util.stream.IntStream;
  * @author Jacob Wysko
  */
 public class Generate extends JFrame {
-	static Generate generate;
+	public final static Generate generate = new Generate();
 	
 	public static void main(String[] args) {
-		generate = new Generate();
 		generate.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		generate.setVisible(true);
 	}
@@ -95,7 +96,7 @@ public class Generate extends JFrame {
 		FlatDarculaLaf.install();
 		initComponents();
 		setEnabledContainer(startingPositionPanel, false);
-		selectValuesInStepSizeList(Generator2.GeneratorSettings.BEGINNER, StepSize.EIGHT_TO_FIVE, eightToFiveList);
+		selectValuesInStepSizeList(DrillGenerator.GeneratorSettings.BEGINNER, StepSize.EIGHT_TO_FIVE, eightToFiveList);
 		beginnerRadioButton.setSelected(true);
 	}
 	
@@ -152,26 +153,26 @@ public class Generate extends JFrame {
 		}
 		
 		
-		Generator2 generator2 = new Generator2();
-		Generator2.GeneratorSettings settings = new Generator2.GeneratorSettings();
+		DrillGenerator drillGenerator = new DrillGenerator();
+		DrillGenerator.GeneratorSettings settings = new DrillGenerator.GeneratorSettings();
 		for (Component component : fundamentalsPanel.getComponents()) {
 			JCheckBox checkBox = (JCheckBox) component;
 			switch (checkBox.getName()) {
 				case "March":
 					if (checkBox.isSelected())
-						settings.validFundamentals.add(March.class);
+						settings.getValidFundamentals().add(March.class);
 					break;
 				case "MarkTime":
 					if (checkBox.isSelected())
-						settings.validFundamentals.add(MarkTime.class);
+						settings.getValidFundamentals().add(MarkTime.class);
 					break;
 				case "Flank":
 					if (checkBox.isSelected())
-						settings.validFundamentals.add(Flank.class);
+						settings.getValidFundamentals().add(Flank.class);
 					break;
 				case "Box":
 					if (checkBox.isSelected())
-						settings.validFundamentals.add(Box.class);
+						settings.getValidFundamentals().add(Box.class);
 					break;
 			}
 		}
@@ -198,7 +199,7 @@ public class Generate extends JFrame {
 			int k = 0;
 			do {
 				k++;
-				e1 = generator2.generateDrill(settings);
+				e1 = drillGenerator.generateDrill(settings);
 			} while (drills.contains(e1) && uniqueDrillsCheckBox.isSelected() && k < 100);
 			if (k != 100)
 				drills.add(e1);
@@ -231,48 +232,48 @@ public class Generate extends JFrame {
 		generatedDrillsList.setModel(model);
 	}
 	
-	private void addStepSizeAndLength(Generator2.GeneratorSettings settings, JCheckBox eightToFiveCheckBox,
+	private void addStepSizeAndLength(DrillGenerator.GeneratorSettings settings, JCheckBox eightToFiveCheckBox,
 	                                  JList<String> eightToFiveList, StepSize eightToFive) {
 		if (eightToFiveCheckBox.isSelected()) {
 			ArrayList<Integer> valuesToAdd = new ArrayList<>();
 			for (String s : eightToFiveList.getSelectedValuesList()) {
 				valuesToAdd.add(Integer.valueOf(s));
 			}
-			settings.stepSizeLengths.put(eightToFive, valuesToAdd);
+			settings.getStepSizeLengths().put(eightToFive, valuesToAdd);
 		}
 	}
 	
-	private void setAllBasedOnDiff(Generator2.GeneratorSettings settings) {
-		marchCheckBox.setSelected(settings.validFundamentals.contains(March.class));
-		markTimeCheckBox.setSelected(settings.validFundamentals.contains(MarkTime.class));
-		flankCheckBox.setSelected(settings.validFundamentals.contains(Flank.class));
-		boxCheckBox.setSelected(settings.validFundamentals.contains(Box.class));
+	private void setAllBasedOnDiff(DrillGenerator.GeneratorSettings settings) {
+		marchCheckBox.setSelected(settings.getValidFundamentals().contains(March.class));
+		markTimeCheckBox.setSelected(settings.getValidFundamentals().contains(MarkTime.class));
+		flankCheckBox.setSelected(settings.getValidFundamentals().contains(Flank.class));
+		boxCheckBox.setSelected(settings.getValidFundamentals().contains(Box.class));
 		
 		/* Set it twice to bypass correction */
-		maxCountFundamentalsSpinner.setValue(settings.maxCountFundamentals);
-		minCountFundamentalsSpinner.setValue(settings.minCountFundamentals);
-		maxCountFundamentalsSpinner.setValue(settings.maxCountFundamentals);
-		minCountFundamentalsSpinner.setValue(settings.minCountFundamentals);
+		maxCountFundamentalsSpinner.setValue(settings.getMaxCountFundamentals());
+		minCountFundamentalsSpinner.setValue(settings.getMinCountFundamentals());
+		maxCountFundamentalsSpinner.setValue(settings.getMaxCountFundamentals());
+		minCountFundamentalsSpinner.setValue(settings.getMinCountFundamentals());
 		
-		allowBackwardsFlanksCheckBox.setSelected(settings.allowBackwardsFlanks);
-		allowBackwardsMarchFromBoxCheckBox.setSelected(settings.allowBackwardsMarchFromBox);
-		allowFlanksIntoMarkTimesCheckBox.setSelected(settings.allowFlanksIntoMarkTimes);
-		eightToFiveCheckBox.setSelected(settings.stepSizeLengths.containsKey(StepSize.EIGHT_TO_FIVE));
-		sixteenToFiveCheckBox.setSelected(settings.stepSizeLengths.containsKey(StepSize.SIXTEEN_TO_FIVE));
-		sixToFiveCheckBox.setSelected(settings.stepSizeLengths.containsKey(StepSize.SIX_TO_FIVE));
-		twelveToFiveCheckBox.setSelected(settings.stepSizeLengths.containsKey(StepSize.TWELVE_TO_FIVE));
+		allowBackwardsFlanksCheckBox.setSelected(settings.isAllowBackwardsFlanks());
+		allowBackwardsMarchFromBoxCheckBox.setSelected(settings.isAllowBackwardsMarchFromBox());
+		allowFlanksIntoMarkTimesCheckBox.setSelected(settings.isAllowFlanksIntoMarkTimes());
+		eightToFiveCheckBox.setSelected(settings.getStepSizeLengths().containsKey(StepSize.EIGHT_TO_FIVE));
+		sixteenToFiveCheckBox.setSelected(settings.getStepSizeLengths().containsKey(StepSize.SIXTEEN_TO_FIVE));
+		sixToFiveCheckBox.setSelected(settings.getStepSizeLengths().containsKey(StepSize.SIX_TO_FIVE));
+		twelveToFiveCheckBox.setSelected(settings.getStepSizeLengths().containsKey(StepSize.TWELVE_TO_FIVE));
 		selectValuesInStepSizeList(settings, StepSize.EIGHT_TO_FIVE, eightToFiveList);
 		selectValuesInStepSizeList(settings, StepSize.SIX_TO_FIVE, sixToFiveList);
 		selectValuesInStepSizeList(settings, StepSize.SIXTEEN_TO_FIVE, sixteenToFiveList);
 		selectValuesInStepSizeList(settings, StepSize.TWELVE_TO_FIVE, twelveToFiveList);
 	}
 	
-	private void selectValuesInStepSizeList(Generator2.GeneratorSettings settings, StepSize stepSize,
+	private void selectValuesInStepSizeList(DrillGenerator.GeneratorSettings settings, StepSize stepSize,
 	                                        JList<String> list) {
-		if (settings.stepSizeLengths.containsKey(stepSize)) {
+		if (settings.getStepSizeLengths().containsKey(stepSize)) {
 			List<Integer> indicesToSelect = new ArrayList<>();
 			for (int i = 0; i < list.getModel().getSize(); i++) {
-				if (settings.stepSizeLengths.get(stepSize).contains(
+				if (settings.getStepSizeLengths().get(stepSize).contains(
 						Integer.valueOf(list.getModel().getElementAt(i))
 				)) {
 					indicesToSelect.add(i);
@@ -292,24 +293,24 @@ public class Generate extends JFrame {
 	
 	private void presetButtonAction(ActionEvent e) {
 		if (beginnerRadioButton.isSelected()) {
-			setAllBasedOnDiff(Generator2.GeneratorSettings.BEGINNER);
+			setAllBasedOnDiff(DrillGenerator.GeneratorSettings.BEGINNER);
 			// Reset after "custom"
 			beginnerRadioButton.setSelected(true);
 		}
 		if (easyRadioButton.isSelected()) {
-			setAllBasedOnDiff(Generator2.GeneratorSettings.EASY);
+			setAllBasedOnDiff(DrillGenerator.GeneratorSettings.EASY);
 			easyRadioButton.setSelected(true);
 		}
 		if (mediumRadioButton.isSelected()) {
-			setAllBasedOnDiff(Generator2.GeneratorSettings.MEDIUM);
+			setAllBasedOnDiff(DrillGenerator.GeneratorSettings.MEDIUM);
 			mediumRadioButton.setSelected(true);
 		}
 		if (hardRadioButton.isSelected()) {
-			setAllBasedOnDiff(Generator2.GeneratorSettings.HARD);
+			setAllBasedOnDiff(DrillGenerator.GeneratorSettings.HARD);
 			hardRadioButton.setSelected(true);
 		}
 		if (expertRadioButton.isSelected()) {
-			setAllBasedOnDiff(Generator2.GeneratorSettings.EXPERT);
+			setAllBasedOnDiff(DrillGenerator.GeneratorSettings.EXPERT);
 			expertRadioButton.setSelected(true);
 		}
 	}

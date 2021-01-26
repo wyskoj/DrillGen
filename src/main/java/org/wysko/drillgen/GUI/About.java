@@ -27,7 +27,10 @@
  * Created by JFormDesigner on Mon Jan 25 23:19:15 EST 2021
  */
 
-package org.wysko.drillgen;
+package org.wysko.drillgen.GUI;
+
+import javax.swing.event.*;
+import org.wysko.drillgen.Utils;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;

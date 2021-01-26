@@ -25,26 +25,26 @@
 
 package org.wysko.drillgen;
 
+import org.jetbrains.annotations.NotNull;
+import org.wysko.drillgen.MarchingParameters.Direction.CardinalDirection;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Fundamental;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.Box;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.March;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Stationary.MarkTime;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Transition.Flank;
-import org.wysko.drillgen.MarchingParameters.RelativeDirection;
+import org.wysko.drillgen.MarchingParameters.Direction.RelativeDirection;
 import org.wysko.drillgen.MarchingParameters.StepSize;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static org.wysko.drillgen.Utils.listRand;
+
 /**
  * Generates drills, customizable with {@link GeneratorSettings}.
  */
 @SuppressWarnings("RedundantIfStatement")
-public class Generator2 {
-	
-	static <T extends List<R>, R> R listRand(T list) {
-		return list.get((int) (Math.random() * list.size()));
-	}
+public class DrillGenerator {
 	
 	/**
 	 * Generates a {@link Drill} that represents the drill, based on settings.
@@ -55,61 +55,21 @@ public class Generator2 {
 	@Nullable
 	public Drill generateDrill(GeneratorSettings settings) {
 		Drill drill = new Drill();
-		int numberOfFundamentals =
-				new Random().nextInt(settings.maxCountFundamentals - settings.minCountFundamentals + 1)
-						+ settings.minCountFundamentals;
+		int numberOfFundamentals = Utils.randIntRange(settings.getMinCountFundamentals(),
+				settings.getMaxCountFundamentals());
+		
 		int sidelineDistance = settings.stepsFromSideline;
 		CardinalDirection currentDirection = settings.startingDirection;
-		/* FOR EACH INDEX TO GENERATE */
+		
 		for (int i = 0; i < numberOfFundamentals; i++) {
-			List<Fundamental> possibleFundamentals = new ArrayList<>();
-			/* For each fundamental type */
-			for (Class<? extends Fundamental> validFundamental : settings.validFundamentals) {
-				/* * * * * * * MARCH * * * * * * */
-				if (validFundamental == March.class) {
-					/* For each valid step size */
-					for (Map.Entry<StepSize, List<Integer>> stepSizeLengthsEntry : settings.stepSizeLengths.entrySet()) {
-						/* For each direction */
-						for (RelativeDirection.YDirection yDirection : RelativeDirection.YDirection.values()) {
-							/* For each valid length */
-							for (int length : stepSizeLengthsEntry.getValue()) {
-								if (!isMarchValid(settings, drill, sidelineDistance, currentDirection, yDirection, length))
-									continue;
-								possibleFundamentals.add(new March(length, stepSizeLengthsEntry.getKey(), yDirection));
-							}
-						}
-					}
-					/* * * * * * * BOX * * * * * * */
-				} else if (validFundamental == Box.class) {
-					for (Map.Entry<StepSize, List<Integer>> stepSizeLengthsEntry : settings.stepSizeLengths.entrySet()) {
-						for (RelativeDirection.XDirection xDirection : RelativeDirection.XDirection.values()) {
-							for (int length : stepSizeLengthsEntry.getValue()) {
-								if (!isBoxValid(settings, sidelineDistance, currentDirection, xDirection, length))
-									continue;
-								possibleFundamentals.add(new Box(length, stepSizeLengthsEntry.getKey(), xDirection));
-								/* Update direction */
-							}
-						}
-					}
-					/* * * * * * * FLANK * * * * * * */
-				} else if (validFundamental == Flank.class) {
-					for (RelativeDirection.XDirection xDirection : RelativeDirection.XDirection.values()) {
-						if (!isFlankValid(settings, drill, numberOfFundamentals, i)) continue;
-						possibleFundamentals.add(new Flank(xDirection));
-					}
-					/* * * * * * * MARK TIME * * * * * * */
-				} else if (validFundamental == MarkTime.class) {
-					if (!isMarkTimeValid(drill)) continue;
-					for (int length : settings.validMarkTimeLengths) {
-						possibleFundamentals.add(new MarkTime(length));
-					}
-				}
-			}
+			List<Fundamental> possibleFundamentals = allPossibleFundamentalsHere(settings, drill, numberOfFundamentals,
+					sidelineDistance, currentDirection, i);
 			
-			/* Pick a random one we just generated */
+			/* Null out if impossible to finish */
 			if (possibleFundamentals.isEmpty())
 				return null;
 			
+			/* Pick a random one we just generated */
 			Fundamental e = listRand(possibleFundamentals);
 			drill.add(e);
 			
@@ -125,10 +85,72 @@ public class Generator2 {
 				Box box = ((Box) e);
 				currentDirection = updateDirectionAfterBox(settings, currentDirection, box.direction);
 			}
-
-//			System.out.printf("%s, distance %d, direction %s%n", drill.peek(), sidelineDistance, currentDirection);
+			
 		}
 		return drill;
+	}
+	
+	/**
+	 * Given a current state, returns the full list of legal {@link Fundamental}s that can be executed here.
+	 *
+	 * @param settings             the generator settings
+	 * @param drill                the current drill
+	 * @param numberOfFundamentals the total number of fundamentals to execute
+	 * @param sidelineDistance     the current distance to the sideline
+	 * @param currentDirection     the current direction
+	 * @param i                    the index of the drill
+	 * @return the full list of legal fundamentals
+	 */
+	@NotNull
+	private List<Fundamental> allPossibleFundamentalsHere(GeneratorSettings settings, Drill drill,
+	                                                      int numberOfFundamentals,
+	                                                      int sidelineDistance, CardinalDirection currentDirection,
+	                                                      int i) {
+		List<Fundamental> possibleFundamentals = new ArrayList<>();
+		/* For each fundamental type */
+		
+		for (Class<? extends Fundamental> validFundamental : settings.validFundamentals) {
+			/* * * * * * * MARCH * * * * * * */
+			if (validFundamental == March.class) {
+				/* For each valid step size */
+				for (Map.Entry<StepSize, List<Integer>> stepSizeLengthsEntry : settings.stepSizeLengths.entrySet()) {
+					/* For each direction */
+					for (RelativeDirection.YDirection yDirection : RelativeDirection.YDirection.values()) {
+						/* For each valid length */
+						for (int length : stepSizeLengthsEntry.getValue()) {
+							if (!isMarchValid(settings, drill, sidelineDistance, currentDirection, yDirection, length))
+								continue;
+							possibleFundamentals.add(new March(length, stepSizeLengthsEntry.getKey(), yDirection));
+						}
+					}
+				}
+				/* * * * * * * BOX * * * * * * */
+			} else if (validFundamental == Box.class) {
+				for (Map.Entry<StepSize, List<Integer>> stepSizeLengthsEntry : settings.stepSizeLengths.entrySet()) {
+					for (RelativeDirection.XDirection xDirection : RelativeDirection.XDirection.values()) {
+						for (int length : stepSizeLengthsEntry.getValue()) {
+							if (!isBoxValid(settings, sidelineDistance, currentDirection, xDirection, length))
+								continue;
+							possibleFundamentals.add(new Box(length, stepSizeLengthsEntry.getKey(), xDirection));
+							/* Update direction */
+						}
+					}
+				}
+				/* * * * * * * FLANK * * * * * * */
+			} else if (validFundamental == Flank.class) {
+				for (RelativeDirection.XDirection xDirection : RelativeDirection.XDirection.values()) {
+					if (!isFlankValid(settings, drill, numberOfFundamentals, i)) continue;
+					possibleFundamentals.add(new Flank(xDirection));
+				}
+				/* * * * * * * MARK TIME * * * * * * */
+			} else if (validFundamental == MarkTime.class) {
+				if (!isMarkTimeValid(drill)) continue;
+				for (int length : settings.validMarkTimeLengths) {
+					possibleFundamentals.add(new MarkTime(length));
+				}
+			}
+		}
+		return possibleFundamentals;
 	}
 	
 	/**
@@ -337,8 +359,8 @@ public class Generator2 {
 	/**
 	 * Provides settings for generating drills.
 	 */
-	static class GeneratorSettings {
-		static final GeneratorSettings BEGINNER = new GeneratorSettings()
+	public static class GeneratorSettings {
+		public static final GeneratorSettings BEGINNER = new GeneratorSettings()
 				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class))
 				.setAssumeInfiniteField(false)
 				.setStartingDirection(null)
@@ -354,7 +376,7 @@ public class Generator2 {
 				}})
 				.setValidMarkTimeLengths(Arrays.asList(4, 8))
 				.setFlankToOriginalDirectionAfterBox(false);
-		static final GeneratorSettings EASY = new GeneratorSettings()
+		public static final GeneratorSettings EASY = new GeneratorSettings()
 				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class, Flank.class))
 				.setAssumeInfiniteField(false)
 				.setStartingDirection(null)
@@ -370,7 +392,7 @@ public class Generator2 {
 				}})
 				.setValidMarkTimeLengths(Arrays.asList(4, 8))
 				.setFlankToOriginalDirectionAfterBox(false);
-		static final GeneratorSettings MEDIUM = new GeneratorSettings()
+		public static final GeneratorSettings MEDIUM = new GeneratorSettings()
 				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class, Flank.class, Box.class))
 				.setAssumeInfiniteField(false)
 				.setStartingDirection(null)
@@ -387,7 +409,7 @@ public class Generator2 {
 				}})
 				.setValidMarkTimeLengths(Arrays.asList(4, 8, 16))
 				.setFlankToOriginalDirectionAfterBox(false);
-		static final GeneratorSettings HARD = new GeneratorSettings()
+		public static final GeneratorSettings HARD = new GeneratorSettings()
 				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class, Flank.class, Box.class))
 				.setAssumeInfiniteField(false)
 				.setStartingDirection(null)
@@ -405,7 +427,7 @@ public class Generator2 {
 				}})
 				.setValidMarkTimeLengths(Arrays.asList(2, 4, 8, 12, 16))
 				.setFlankToOriginalDirectionAfterBox(false);
-		static final GeneratorSettings EXPERT = new GeneratorSettings()
+		public static final GeneratorSettings EXPERT = new GeneratorSettings()
 				.setValidFundamentals(Arrays.asList(March.class, MarkTime.class, Flank.class, Box.class))
 				.setAssumeInfiniteField(false)
 				.setStartingDirection(null)
@@ -427,56 +449,56 @@ public class Generator2 {
 		/**
 		 * List of valid fundamentals that can be generated.
 		 */
-		List<Class<? extends Fundamental>> validFundamentals;
+		private List<Class<? extends Fundamental>> validFundamentals;
 		/**
 		 * If true, the program will not consider that the band can run off the field. If false, the program takes
 		 * this into consideration and calculates available fundamentals based on {@link
 		 * GeneratorSettings#startingDirection} and
 		 * {@link GeneratorSettings#stepsFromSideline}.
 		 */
-		boolean assumeInfiniteField;
+		private boolean assumeInfiniteField;
 		/**
 		 * The starting direction. Only used when {@link GeneratorSettings#assumeInfiniteField} is true.
 		 */
-		CardinalDirection startingDirection;
+		private CardinalDirection startingDirection;
 		/**
 		 * The minimum number of fundamentals to appear in each drill.
 		 */
-		int minCountFundamentals;
+		private int minCountFundamentals;
 		/**
 		 * The maximum number of fundamentals to appear in each drill.
 		 */
-		int maxCountFundamentals;
+		private int maxCountFundamentals;
 		/**
 		 * Allow backwards flanks? A backwards flank is one where the marching direction before the flank is
 		 * backwards or the marching direction after the flank is backwards.
 		 */
-		boolean allowBackwardsFlanks;
+		private boolean allowBackwardsFlanks;
 		/**
 		 * The initial number of steps from the sideline. Only used when {@link GeneratorSettings#assumeInfiniteField}
 		 * is true.
 		 */
-		int stepsFromSideline;
+		private int stepsFromSideline;
 		/**
 		 * Allow a backwards march after coming out of a box?
 		 */
-		boolean allowBackwardsMarchFromBox;
+		private boolean allowBackwardsMarchFromBox;
 		/**
 		 * Allows flanks before mark times.
 		 */
-		boolean allowFlanksIntoMarkTimes;
+		private boolean allowFlanksIntoMarkTimes;
 		/**
 		 * Adds another (implied) flank after a box.
 		 */
-		boolean flankToOriginalDirectionAfterBox;
+		private boolean flankToOriginalDirectionAfterBox;
 		/**
 		 * Valid lengths to use given the step size.
 		 */
-		HashMap<StepSize, List<Integer>> stepSizeLengths;
+		private HashMap<StepSize, List<Integer>> stepSizeLengths;
 		/**
 		 * Valid mark time lengths.
 		 */
-		List<Integer> validMarkTimeLengths;
+		private List<Integer> validMarkTimeLengths;
 		
 		public GeneratorSettings() {
 			validFundamentals = new ArrayList<>();
@@ -542,6 +564,54 @@ public class Generator2 {
 		public GeneratorSettings setFlankToOriginalDirectionAfterBox(boolean flankToOriginalDirectionAfterBox) {
 			this.flankToOriginalDirectionAfterBox = flankToOriginalDirectionAfterBox;
 			return this;
+		}
+		
+		public List<Class<? extends Fundamental>> getValidFundamentals() {
+			return validFundamentals;
+		}
+		
+		public boolean isAssumeInfiniteField() {
+			return assumeInfiniteField;
+		}
+		
+		public CardinalDirection getStartingDirection() {
+			return startingDirection;
+		}
+		
+		public int getMinCountFundamentals() {
+			return minCountFundamentals;
+		}
+		
+		public int getMaxCountFundamentals() {
+			return maxCountFundamentals;
+		}
+		
+		public boolean isAllowBackwardsFlanks() {
+			return allowBackwardsFlanks;
+		}
+		
+		public int getStepsFromSideline() {
+			return stepsFromSideline;
+		}
+		
+		public boolean isAllowBackwardsMarchFromBox() {
+			return allowBackwardsMarchFromBox;
+		}
+		
+		public boolean isAllowFlanksIntoMarkTimes() {
+			return allowFlanksIntoMarkTimes;
+		}
+		
+		public boolean isFlankToOriginalDirectionAfterBox() {
+			return flankToOriginalDirectionAfterBox;
+		}
+		
+		public HashMap<StepSize, List<Integer>> getStepSizeLengths() {
+			return stepSizeLengths;
+		}
+		
+		public List<Integer> getValidMarkTimeLengths() {
+			return validMarkTimeLengths;
 		}
 	}
 }

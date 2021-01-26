@@ -25,9 +25,13 @@
 
 package org.wysko.drillgen.MarchingParameters.Fundamentals;
 
+import org.jetbrains.annotations.Contract;
+
 /**
  * A generic term for a specific move a performer can make while marching on the field.
  */
 public abstract class Fundamental {
-
+	@Contract(pure = true)
+	protected Fundamental() {
+	}
 }

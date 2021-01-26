@@ -23,7 +23,7 @@
  *
  */
 
-package org.wysko.drillgen;
+package org.wysko.drillgen.MarchingParameters.Direction;
 
 /**
  * A cardinal direction.

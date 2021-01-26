@@ -23,7 +23,7 @@
  *
  */
 
-package org.wysko.drillgen;
+package org.wysko.drillgen.GUI;
 
 import javax.swing.*;
 import java.awt.*;

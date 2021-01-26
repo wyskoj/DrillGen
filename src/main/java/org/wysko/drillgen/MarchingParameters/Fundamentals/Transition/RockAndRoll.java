@@ -27,7 +27,13 @@ package org.wysko.drillgen.MarchingParameters.Fundamentals.Transition;
 
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Fundamental;
 
+/**
+ * A transition from a backwards to a forwards march, V.V.
+ */
 public class RockAndRoll extends Fundamental {
+	/**
+	 * Lone constructor.
+	 */
 	public RockAndRoll() {
 	}
 	

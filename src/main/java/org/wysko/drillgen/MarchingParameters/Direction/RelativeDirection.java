@@ -23,13 +23,64 @@
  *
  */
 
-package org.wysko.drillgen;
+package org.wysko.drillgen.MarchingParameters.Direction;
 
 /**
- * Thrown when step size and difficulty are invalid combinations.
- *
- * @deprecated
+ * An orthogonal, relative, theoretical line relative to the marcher's body.
  */
-@Deprecated
-public class InvalidDifficultyStepSizeCombo extends Exception {
+public class RelativeDirection {
+	/**
+	 * Directions relative to the sagittal plane of the marcher's body.
+	 */
+	public enum YDirection {
+		
+		/**
+		 * The direction toward the front, opposite of back.
+		 */
+		FORWARDS("F"),
+		
+		/**
+		 * The direction toward the back, opposite of front.
+		 */
+		BACKWARDS("B");
+		
+		final String s;
+		
+		YDirection(String s) {
+			this.s = s;
+		}
+		
+		@Override
+		public String toString() {
+			return s;
+		}
+	}
+	
+	
+	/**
+	 * Directions relative to the coronal plane of the marcher's body.
+	 */
+	public enum XDirection {
+		
+		/**
+		 * The opposite of right; toward the west when one is facing north.
+		 */
+		LEFT("L"),
+		
+		/**
+		 * The opposite of left; toward the east when one is facing north.
+		 */
+		RIGHT("R");
+		
+		final String s;
+		
+		XDirection(String s) {
+			this.s = s;
+		}
+		
+		@Override
+		public String toString() {
+			return s;
+		}
+	}
 }

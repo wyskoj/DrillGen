@@ -25,13 +25,26 @@
 
 package org.wysko.drillgen;
 
+import org.wysko.drillgen.GUI.ExceptionViewer;
+import org.wysko.drillgen.GUI.Generate;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Random;
 
+/**
+ * Various utilities
+ */
 public class Utils {
+	/**
+	 * Opens the system's default browser and displays a webpage with the given URL.
+	 *
+	 * @param url the URL to open
+	 */
 	public static void displayWebpage(String url) {
 		Desktop desktop = java.awt.Desktop.getDesktop();
 		try {
@@ -44,6 +57,11 @@ public class Utils {
 		}
 	}
 	
+	/**
+	 * Displays a {@link JOptionPane} showing an exception with {@link ExceptionViewer}.
+	 *
+	 * @param exec the exception to display
+	 */
 	public static void showExceptionWithFrame(Exception exec) {
 		ExceptionViewer exceptionViewer = new ExceptionViewer();
 		exceptionViewer.setExceptionTextArea(exec.toString());
@@ -51,4 +69,26 @@ public class Utils {
 				UIManager.getIcon(
 						"OptionPane.errorIcon"));
 	}
+	
+	/**
+	 * Gets a random item from a specified list.
+	 *
+	 * @param list the list
+	 * @return a random item from the list
+	 */
+	static <T extends List<R>, R> R listRand(T list) {
+		return list.get((int) (Math.random() * list.size()));
+	}
+	
+	/**
+	 * Generates a random number in an all-inclusive range.
+	 *
+	 * @param min the min number to generate
+	 * @param max the max number to generate
+	 * @return the randomly generated number
+	 */
+	public static int randIntRange(int min, int max) {
+		return new Random().nextInt((max - min) + 1) + min;
+	}
+	
 }

@@ -52,6 +52,9 @@ public enum StepSize {
 	 */
 	TWELVE_TO_FIVE("12:5");
 	
+	/**
+	 * String representation of this StepSize.
+	 */
 	final String s;
 	/**
 	 * Defines step sizes as ratios of {@link StepSize#EIGHT_TO_FIVE}.

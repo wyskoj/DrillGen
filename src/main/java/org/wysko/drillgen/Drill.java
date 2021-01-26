@@ -25,12 +25,13 @@
 
 package org.wysko.drillgen;
 
+import org.jetbrains.annotations.Contract;
+import org.wysko.drillgen.MarchingParameters.Direction.RelativeDirection;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Fundamental;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.Box;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.March;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Moving.MovingFundamental;
 import org.wysko.drillgen.MarchingParameters.Fundamentals.Transition.RockAndRoll;
-import org.wysko.drillgen.MarchingParameters.RelativeDirection;
 import org.wysko.drillgen.MarchingParameters.StepSize;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class Drill {
 	 */
 	private final List<Fundamental> fundamentals;
 	
+	@Contract(pure = true)
 	public Drill() {
 		this.fundamentals = new ArrayList<>();
 	}
@@ -67,11 +69,12 @@ public class Drill {
 	}
 	
 	/**
-	 * @param showRockAndRolls              show {@link RockAndRoll}s "RR" where implied
-	 * @param showStepSizeIfOnlyEightToFive show step size on drills with only {@link StepSize#EIGHT_TO_FIVE}
+	 * @param showRockAndRolls              show {@link RockAndRoll}s ("RR") where implied
+	 * @param hideStepSizeIfOnlyEightToFive hide step size on drills with only {@link StepSize#EIGHT_TO_FIVE}
 	 * @return the formatted string
 	 */
-	public String asString(boolean showRockAndRolls, boolean showStepSizeIfOnlyEightToFive) {
+	@Contract(pure = true)
+	public String asString(boolean showRockAndRolls, boolean hideStepSizeIfOnlyEightToFive) {
 		String s;
 		if (!showRockAndRolls) {
 			s = fundamentals.toString();
@@ -79,24 +82,21 @@ public class Drill {
 			List<Fundamental> temp = new ArrayList<>(fundamentals);
 			for (int i = 0; i < temp.size(); i++) {
 				if (i + 1 >= temp.size()) break;
-				if (
-						(
-								temp.get(i) instanceof March
-										&& temp.get(i + 1) instanceof March
-										&& ((March) temp.get(i)).direction != ((March) temp.get(i + 1)).direction
-						)
-								||
-								(
-										temp.get(i) instanceof March && ((March) temp.get(i)).direction == RelativeDirection.YDirection.BACKWARDS && temp.get(i + 1) instanceof Box
-								)
+				// If the last fundamental was a backwards march and this one is a forwards march, or the last
+				// fundamental was a backwards march and this one is a box.
+				if ((temp.get(i) instanceof March
+						&& temp.get(i + 1) instanceof March
+						&& ((March) temp.get(i)).direction != ((March) temp.get(i + 1)).direction)
+						|| (temp.get(i) instanceof March
+						&& ((March) temp.get(i)).direction == RelativeDirection.YDirection.BACKWARDS
+						&& temp.get(i + 1) instanceof Box)
 				) {
 					temp.add(i + 1, new RockAndRoll());
-					
 				}
 			}
 			s = temp.toString();
 		}
-		if (showStepSizeIfOnlyEightToFive) {
+		if (hideStepSizeIfOnlyEightToFive) {
 			boolean allEightToFive = fundamentals
 					.stream()
 					.filter(fundamental -> fundamental instanceof MovingFundamental)
